@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,24 +26,23 @@ namespace win
         public MainWindow()
         {
             InitializeComponent();
-            string url = @"https://localhost:5001/api/testitems";
-            (FindName("testBox") as TextBox).Text = GetWebPage(url);
+            //string url = @"https://localhost:5001/api/testitems";
+            //(FindName("testBox") as TextBox).Text = GetWebPageAsync(url).Result;
+
+            WritingTestButton.Click += (_, _) => ActiveTest.Content = new WritingTest();
+            ReactionTimeTestButton.Click += (_, _) => ActiveTest.Content = new ReactionTimeTest();
+            AimTestButton.Click += (_, _) => ActiveTest.Content = new AimTest();
+            NumberMemoryTestButton.Click += (_, _) => ActiveTest.Content = new NumberMemoryTest();
+
         }
-        string GetWebPage(string address)
+        async Task<string> GetWebPageAsync(string address)
         {
-            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
-            string responseText;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+            HttpClientHandler clientHandler = new();
+            // Bypassing SSL cetificate
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
-                using (StreamReader responseStream = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8")))
-                {
-                    responseText = responseStream.ReadToEnd();
-                }
-            }
-
-            return responseText;
+            HttpClient client = new HttpClient(clientHandler);
+            return await client.GetStringAsync(address);
         }
     }
 }

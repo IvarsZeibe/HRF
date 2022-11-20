@@ -7,7 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBox Name="testBox" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <!--<TextBox Name="testBox" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>-->
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="20*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button x:Name="WritingTestButton" Grid.Row="0" Grid.Column="0">Writing Test</Button>
+        <Button x:Name="ReactionTimeTestButton" Grid.Row="0" Grid.Column="1">Reaction time Test</Button>
+        <Button x:Name="AimTestButton" Grid.Row="0" Grid.Column="2">Aim Test</Button>
+        <Button x:Name="NumberMemoryTestButton" Grid.Row="0" Grid.Column="3">Number memory Test</Button>
+
+
+        <ContentControl x:Name="ActiveTest"  Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1"/>
+        <!--<local:WritingTest Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>-->
     </Grid>
 </Window>
