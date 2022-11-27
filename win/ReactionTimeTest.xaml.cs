@@ -25,14 +25,12 @@ namespace win
         private Random random = new Random();
         private DispatcherTimer timerUntilClickable = new();
         private Stopwatch stopwatch = new();
-        private int reactionTimeMilliseconds = 0;
         private bool isStarted = false;
         private bool isClickable = false;
-        private int responseTimeCompensation = 70;
         public ReactionTimeTest()
         {
             InitializeComponent();
-            //timerUntilClicked.Tick += (object? sender, EventArgs e) => reactionTimeMilliseconds++;
+
             timerUntilClickable.Tick += (object? sender, EventArgs e) =>
             {
                 timerUntilClickable.Stop();
@@ -53,18 +51,17 @@ namespace win
         private void StopTest()
         {
             stopwatch.Stop();
-            reactionTimeMilliseconds = (int)stopwatch.ElapsedMilliseconds;
+            timerUntilClickable.Stop();
             if (isClickable)
             {
                 ReactionTimeButton.Background = Brushes.LightBlue;
-                ReactionTimeButton.Content = $"Your reaction time is {Math.Max(0, reactionTimeMilliseconds - responseTimeCompensation)} ms";
+                ReactionTimeButton.Content = $"Your reaction time is {Math.Max(0, (int)stopwatch.ElapsedMilliseconds)} ms";
             }
             else
             {   
                 ReactionTimeButton.Background = Brushes.LightBlue;
                 ReactionTimeButton.Content = "You clicked too early";
             }
-            reactionTimeMilliseconds = 0;
         }
         private void OnClick(object sender, RoutedEventArgs e)
         {
@@ -78,10 +75,6 @@ namespace win
                 StopTest();
                 isStarted = false;
             }
-            //if (isClickable)
-            //{
-            //    ba
-            //}
         }
 
     }

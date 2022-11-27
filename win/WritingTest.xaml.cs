@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -40,15 +43,16 @@ namespace win
 
         private bool isStarted = false;
         private const int averageWordLength = 5;
-        private const int testTimeInSeconds = 5;
+        private const int testTimeInSeconds = 30;
         private int timeLeft = 0;
         private DispatcherTimer dispatcherTimer = new();
+        private Random random = new();
 
         public WritingTest()
         {
             InitializeComponent();
-
-            if (wordss.Document.Blocks.FirstBlock is not Paragraph paragraph)
+            LoadWords();
+            if (Words.Document.Blocks.FirstBlock is not Paragraph paragraph)
             {
                 throw new Exception("Should have been a paragraph");
             }
@@ -56,6 +60,24 @@ namespace win
 
             SetupTimer();
             Reset();
+        }
+        private void LoadWords()
+        {
+            List<string> allWords = new();
+
+            string file = @"pack://application:,,,/" + Assembly.GetExecutingAssembly().GetName().Name + ";component/assets/word_list.txt";
+            using (var reader = new StreamReader(Application.GetResourceStream(new Uri(file)).Stream))
+            {
+                while (reader.ReadLine() is string line)
+                {
+                    allWords.Add(line);
+                }
+            }
+            correctWords.Clear();
+            for (int i = 0; i < 100; i++)
+            {
+                correctWords.Add(allWords[random.Next(0, allWords.Count())]);
+            }
         }
         private void SetupTimer()
         {
@@ -114,9 +136,9 @@ namespace win
         }
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            wordss.KeyDown += HandleKeyPress;
-            wordss.PreviewKeyDown += HandlePreviewKeyPress;
-            wordss.Focus();
+            Words.KeyDown += HandleKeyPress;
+            Words.PreviewKeyDown += HandlePreviewKeyPress;
+            Words.Focus();
         }
         private void HandlePreviewKeyPress(object sender, KeyEventArgs e)
         {
@@ -138,7 +160,7 @@ namespace win
                     return;
                 }
                 inlines.Add(new Run(" "));
-                wordss.CaretPosition = inlines.LastInline.ElementEnd;
+                Words.CaretPosition = inlines.LastInline.ElementEnd;
 
                 if (AnyErrorsIn(currentWordIndex - 1))
                 {
@@ -223,7 +245,7 @@ namespace win
 
                 RemoveUnwrittenPartOfTest();
                 WriteLetter(letter);
-                wordss.CaretPosition = inlines.LastInline.ElementEnd;
+                Words.CaretPosition = inlines.LastInline.ElementEnd;
                 AddUnwrittenPartOfTest();
             }
         }
@@ -257,7 +279,7 @@ namespace win
             }
             else if (correctWords[currentWordIndex][currentLetterIndex] == letter)
             {
-                inlines.Add(new Run(letter.ToString()) { Foreground = Brushes.Green });
+                inlines.Add(new Run(letter.ToString()) { Foreground = Brushes.LightGreen });
                 currentLetterIndex++;
                 correctKeyPresses++;
             }

@@ -36,7 +36,7 @@ namespace win
         public AimTest()
         {
             InitializeComponent();
-            // size changed executes also on Loaded event
+            // SizeChanged executes also on Loaded event (executes when UserControl is loaded)
             SizeChanged += (_, _) => ReadyUpTest();
         }
         private void OnTargetClick(object sender, RoutedEventArgs e)

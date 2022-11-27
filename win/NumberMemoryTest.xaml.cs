@@ -21,7 +21,8 @@ namespace win
     /// </summary>
     public partial class NumberMemoryTest : UserControl
     {
-        private int level = 1;
+        private int currentLevel;
+        private int startingLevel = 2;
         private bool isTestStarted = false;
         private Random random = new();
         private DispatcherTimer timer = new();
@@ -41,6 +42,7 @@ namespace win
                 NumberToRemember.Visibility = Visibility.Hidden;
                 NumberInput.Text = "";
                 NumberInput.Visibility = Visibility.Visible;
+                NumberInput.Focus();
                 timer.Stop();
             };
         }
@@ -55,33 +57,48 @@ namespace win
         {
             TestDetails.Text = "";
             isTestStarted = true;
-            level = 1;
+            currentLevel = startingLevel;
             StartLevel();
         }
         private void StartLevel()
         {
-            int maxNumber = (int)Math.Pow(10, level);
-            int minNumber = level == 1 ? 0 : (int)Math.Pow(10, level - 1);
-            NumberToRemember.Text = random.Next(minNumber, maxNumber).ToString();
+            string number = "";
+            for (int i = 0; i < currentLevel; i++)
+            {
+                number += GetRandomDigit().ToString();
+            }
+            NumberToRemember.Text = number;
             NumberToRemember.Visibility = Visibility.Visible;
             NumberInput.Visibility = Visibility.Hidden;
 
-            timer.Interval = new TimeSpan(0, 0, level);
+            timer.Interval = new TimeSpan(0, 0, currentLevel);
             timer.Start();
+        }
+        private int GetRandomDigit()
+        {
+            return random.Next(0, 10);
         }
         private void SubmitAnswer()
         {
             if (NumberInput.Text == NumberToRemember.Text)
             {
-                level++;
+                currentLevel++;
                 StartLevel();
             }
             else
             {
+                if (currentLevel == startingLevel)
+                {
+                    currentLevel = 0;
+                }
+                else
+                {
+                    currentLevel--;
+                }
                 isTestStarted = false;
                 NumberToRemember.Visibility = Visibility.Hidden;
                 NumberInput.Visibility = Visibility.Hidden;
-                TestDetails.Text = $"Your result: {level - 1} digits\nClick to try again";
+                TestDetails.Text = $"Your result: {currentLevel} digits\nClick to try again";
             }
         }
     }

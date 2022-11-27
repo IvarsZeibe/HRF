@@ -7,4 +7,20 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="assets\background.jpg" />
+    <None Remove="assets\logo.png" />
+    <None Remove="assets\robot.png" />
+    <None Remove="assets\target_for_test.png" />
+    <None Remove="assets\word_list.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\background.jpg" />
+    <Resource Include="assets\logo.png" />
+    <Resource Include="assets\robot.png" />
+    <Resource Include="assets\target_for_test.png" />
+    <Resource Include="assets\word_list.txt" />
+  </ItemGroup>
+
 </Project>

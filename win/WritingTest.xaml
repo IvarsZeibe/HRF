@@ -9,12 +9,15 @@
              Loaded="UserControl_Loaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="2*" />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <RichTextBox Grid.Row="0" Cursor="Arrow" IsHitTestVisible="False" IsReadOnlyCaretVisible="True" IsReadOnly="True" x:Name="wordss"/>
-        <TextBlock Grid.Row="1" x:Name="result"></TextBlock>
-        <TextBlock Grid.Row="2" x:Name="TimerUI"></TextBlock>
+        <RichTextBox Grid.Row="0" Background="#222233"
+                     Foreground="White" Cursor="Arrow"
+                     IsHitTestVisible="False" IsReadOnlyCaretVisible="True"
+                     IsReadOnly="True" x:Name="Words" />
+        <TextBlock Grid.Row="1" x:Name="result" Foreground="White" />
+        <TextBlock Grid.Row="2" x:Name="TimerUI" Foreground="White" />
     </Grid>
 </UserControl>

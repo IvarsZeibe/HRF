@@ -5,27 +5,74 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:win"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Human Research Foundation" Height="450" Width="800">
     <Grid>
-        <!--<TextBox Name="testBox" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>-->
-
+        <Grid.Background>
+            <ImageBrush ImageSource="/assets/background.jpg" Stretch="UniformToFill"/>
+        </Grid.Background>
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Background" Value="Black" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#222222" />
+                        <Setter Property="Cursor" Value="Hand" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+        
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="20*"></RowDefinition>
+            <RowDefinition Height="1.3*" />
+            <RowDefinition Height="20*" />
         </Grid.RowDefinitions>
+        
         <Button x:Name="WritingTestButton" Grid.Row="0" Grid.Column="0">Writing Test</Button>
         <Button x:Name="ReactionTimeTestButton" Grid.Row="0" Grid.Column="1">Reaction time Test</Button>
         <Button x:Name="AimTestButton" Grid.Row="0" Grid.Column="2">Aim Test</Button>
         <Button x:Name="NumberMemoryTestButton" Grid.Row="0" Grid.Column="3">Number memory Test</Button>
+        <Button x:Name="HomeButton" Grid.Row="0" Grid.Column="4">
+            <Image Source="assets/logo.png"></Image>
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Background" Value="Black" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
-
-        <ContentControl x:Name="ActiveTest"  Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="1"/>
-        <!--<local:WritingTest Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>-->
+        <ContentControl x:Name="ActiveTest"  Grid.Column="0" Grid.ColumnSpan="1000" Grid.Row="1" />
     </Grid>
 </Window>
