@@ -7,29 +7,73 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="AimTestUserControl">
-    <Grid Background="Transparent" UIElement.MouseDown="OnGridClick" x:Name="AimArea">
-        <Grid.Resources>
-            <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
-            </Style>
-        </Grid.Resources>
-        <TextBlock x:Name="TargetsRemaining" Visibility="Hidden" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock x:Name="ResultTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+    <Grid>
+        <Border x:Name="BlurBorder">
+            <Grid Background="Transparent" UIElement.MouseDown="OnGridClick" x:Name="AimArea">
+                <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="White" />
+                    </Style>
+                </Grid.Resources>
+                <TextBlock x:Name="TargetsRemaining" FontSize="32"
+                       Visibility="Visible" HorizontalAlignment="Center"
+                       Text="Click the target to start" />
 
-        <Ellipse x:Name="Target" UIElement.MouseDown="OnTargetClick" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Ellipse.Fill>
-                <ImageBrush ImageSource="/assets/target_for_test.png" />
-            </Ellipse.Fill>
-        </Ellipse>
-        
-        <Grid.Style>
-            <Style TargetType="{x:Type Grid}">
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Cursor" Value="Hand"></Setter>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
+                <Ellipse x:Name="Target" Visibility="Hidden" UIElement.MouseDown="OnTargetClick" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="/assets/target_for_test.png" />
+                    </Ellipse.Fill>
+                </Ellipse>
+
+
+                <Grid Background="Transparent" x:Name="ResultView"
+                  UIElement.MouseDown="Restart" Visibility="Hidden">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock FontSize="32" HorizontalAlignment="Center" TextAlignment="Center"
+                               x:Name="Result" Foreground="White"
+                               Text="Click to try again" />
+                        <Button Width="200" FontSize="32" x:Name="SaveButton" Click="SavePopup">
+                            Save result
+                        </Button>
+                    </StackPanel>
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Cursor" Value="Hand" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="Hand"></Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+        </Border>
+
+        <Grid Visibility="Hidden" x:Name="NameInputPopup">
+            <Grid Background="Black" Opacity="0.5" />
+            <Border Padding="10" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border.Background>
+                    <ImageBrush ImageSource="/assets/background.jpg" Stretch="UniformToFill"/>
+                </Border.Background>
+                <StackPanel>
+                    <TextBlock Text="Enter your nickname" FontSize="24" Foreground="White" />
+                    <TextBox Margin="0 0 0 30" x:Name="NameInput" FontSize="24" />
+                    <Grid>
+                        <Button Click="Cancel" FontSize="24" Width="100" Content="Cancel" HorizontalAlignment="Left" />
+                        <Button Click="Save" FontSize="24" Width="100" Content="Save" HorizontalAlignment="Right" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

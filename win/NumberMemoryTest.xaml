@@ -6,43 +6,73 @@
              xmlns:local="clr-namespace:win"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Border x:Name="BlurBorder">
+            <Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.6*" />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Viewbox Grid.Row="1" Grid.Column="1">
+                        <TextBlock Foreground="White" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="NumberToRemember"></TextBlock>
+                    </Viewbox>
+                    <Viewbox StretchDirection="UpOnly" Stretch="Uniform" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                        <TextBox Foreground="White" Background="Transparent" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Visibility="Hidden" x:Name="NumberInput">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="CaretBrush" Value="White" />
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </Viewbox>
+                </Grid>
 
-    <Grid Background="Transparent" UIElement.MouseDown="OnGridClick">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0.6*" />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Viewbox Grid.Row="1" Grid.Column="1">
-            <TextBlock Foreground="White" Text="Click to start number memory test" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="TestDetails"></TextBlock>
-        </Viewbox>
-        <Viewbox Grid.Row="1" Grid.Column="1">
-            <TextBlock Foreground="White" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="NumberToRemember"></TextBlock>
-        </Viewbox>
-        <Viewbox StretchDirection="UpOnly" Stretch="Uniform" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
-            <TextBox Foreground="White" Background="Transparent" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Visibility="Hidden" x:Name="NumberInput">
-                test
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="CaretBrush" Value="White" />
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
-        </Viewbox>
-        <Grid.Style>
-            <Style TargetType="{x:Type Grid}">
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Cursor" Value="Hand" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
+                <Grid Background="Transparent" x:Name="ResultView"
+                  UIElement.MouseDown="Restart">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock FontSize="32" HorizontalAlignment="Center"
+                               x:Name="Result" Foreground="White" TextAlignment="Center"
+                               Text="Click to start number memory test" />
+                        <Button Width="200" FontSize="32" x:Name="SaveButton" Visibility="Hidden" Click="SavePopup">
+                            Save result
+                        </Button>
+                    </StackPanel>
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Cursor" Value="Hand" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Grid Visibility="Hidden" x:Name="NameInputPopup">
+            <Grid Background="Black" Opacity="0.5" />
+            <Border Padding="10" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border.Background>
+                    <ImageBrush ImageSource="/assets/background.jpg" Stretch="UniformToFill"/>
+                </Border.Background>
+                <StackPanel>
+                    <TextBlock Text="Enter your nickname" FontSize="24" Foreground="White" />
+                    <TextBox Margin="0 0 0 30" x:Name="NameInput" FontSize="24" />
+                    <Grid>
+                        <Button Click="Cancel" FontSize="24" Width="100" Content="Cancel" HorizontalAlignment="Left" />
+                        <Button Click="Save" FontSize="24" Width="100" Content="Save" HorizontalAlignment="Right" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

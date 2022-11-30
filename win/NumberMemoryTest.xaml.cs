@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,10 +10,12 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Path = System.IO.Path;
 
 namespace win
 {
@@ -26,6 +29,8 @@ namespace win
         private bool isTestStarted = false;
         private Random random = new();
         private DispatcherTimer timer = new();
+
+        private BlurEffect blurEffect = new() { Radius = 5, KernelType = KernelType.Gaussian };
         public NumberMemoryTest()
         {
             InitializeComponent();
@@ -46,7 +51,7 @@ namespace win
                 timer.Stop();
             };
         }
-        private void OnGridClick(object sender, RoutedEventArgs e)
+        private void Restart(object sender, RoutedEventArgs e)
         {
             if (!isTestStarted)
             {
@@ -55,7 +60,7 @@ namespace win
         }
         private void StartTest()
         {
-            TestDetails.Text = "";
+            ResultView.Visibility = Visibility.Hidden;
             isTestStarted = true;
             currentLevel = startingLevel;
             StartLevel();
@@ -98,8 +103,39 @@ namespace win
                 isTestStarted = false;
                 NumberToRemember.Visibility = Visibility.Hidden;
                 NumberInput.Visibility = Visibility.Hidden;
-                TestDetails.Text = $"Your result: {currentLevel} digits\nClick to try again";
+                ResultView.Visibility = Visibility.Visible;
+                SaveButton.Visibility = Visibility.Visible;
+                Result.Text = $"Your result: {currentLevel} digits\nClick to try again";
             }
+        }
+        private void SavePopup(object sender, RoutedEventArgs e)
+        {
+            BlurBorder.Effect = blurEffect;
+            NameInputPopup.Visibility = Visibility.Visible;
+        }
+        private void Cancel(object sender, RoutedEventArgs e)
+        {
+            BlurBorder.Effect = null;
+            NameInputPopup.Visibility = Visibility.Hidden;
+        }
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            BlurBorder.Effect = null;
+            NameInputPopup.Visibility = Visibility.Hidden;
+            SaveButton.Visibility = Visibility.Hidden;
+            string nickname = NameInput.Text.Trim();
+            if (nickname == "")
+            {
+                nickname = "Anonymous";
+            }
+            string pathToFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HRF");
+            if (!Directory.Exists(pathToFolder))
+            {
+                Directory.CreateDirectory(pathToFolder);
+            }
+            var filePath = Path.Combine(pathToFolder, "NumberMemoryTestResults.txt");
+
+            File.AppendAllText(filePath, $"Username: {nickname}; Numbers remembered: {currentLevel}\n");
         }
     }
 }

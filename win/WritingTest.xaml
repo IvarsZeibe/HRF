@@ -8,16 +8,58 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UserControl_Loaded">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <RichTextBox Grid.Row="0" Background="#222233"
-                     Foreground="White" Cursor="Arrow"
-                     IsHitTestVisible="False" IsReadOnlyCaretVisible="True"
-                     IsReadOnly="True" x:Name="Words" />
-        <TextBlock Grid.Row="1" x:Name="result" Foreground="White" />
-        <TextBlock Grid.Row="2" x:Name="TimerUI" Foreground="White" />
+        <Border x:Name="BlurBorder">
+            <Grid>
+                <StackPanel x:Name="WritingView" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Viewbox Height="50">
+                        <TextBlock HorizontalAlignment="Center"
+                           x:Name="TimerUI" Foreground="White" />
+                    </Viewbox>
+                    <RichTextBox Background="#222233"
+                             Foreground="White" Cursor="Arrow"
+                             IsHitTestVisible="False" IsReadOnlyCaretVisible="True"
+                             IsReadOnly="True" x:Name="Words"
+                             FontSize="24" MaxWidth="800" BorderThickness="0"
+                             MaxHeight="95" />
+                </StackPanel>
+
+                <Grid Background="Transparent" x:Name="ResultView"
+                      UIElement.MouseDown="Restart">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock FontSize="32" HorizontalAlignment="Center"
+                                   x:Name="Result" Foreground="White" TextAlignment="Center" />
+                        <Button Width="200" FontSize="32" x:Name="SaveButton" Click="SavePopup">
+                            Save result
+                        </Button>
+                    </StackPanel>
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Cursor" Value="Hand" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Grid Visibility="Hidden" x:Name="NameInputPopup">
+            <Grid Background="Black" Opacity="0.5" />
+            <Border Padding="10" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border.Background>
+                    <ImageBrush ImageSource="/assets/background.jpg" Stretch="UniformToFill"/>
+                </Border.Background>
+                <StackPanel>
+                    <TextBlock Text="Enter your nickname" FontSize="24" Foreground="White" />
+                    <TextBox Margin="0 0 0 30" x:Name="NameInput" FontSize="24" />
+                    <Grid>
+                        <Button Click="Cancel" FontSize="24" Width="100" Content="Cancel" HorizontalAlignment="Left" />
+                        <Button Click="Save" FontSize="24" Width="100" Content="Save" HorizontalAlignment="Right" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

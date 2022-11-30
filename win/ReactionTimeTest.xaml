@@ -7,23 +7,49 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <Label Grid.Row="0" UIElement.MouseDown="OnClick" x:Name="ReactionTimeButton"
-               Content="Click to strat" Background="LightBlue"
-               VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-            <Label.Style>
-                <Style TargetType="{x:Type Label}">
-                    <Setter Property="Background" Value="LightBlue" />
-                    
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Cursor" Value="Hand" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Label.Style>
-        </Label>
+        <Border x:Name="BlurBorder">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Background="Transparent" x:Name="Test"
+              UIElement.MouseDown="Restart">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock FontSize="32" HorizontalAlignment="Center"
+                           x:Name="TestText" Foreground="White"
+                           Text="Click to start"  TextAlignment="Center" />
+                        <Button FontSize="32" Width="200" x:Name="SaveButton" Visibility="Hidden" Click="SavePopup">
+                            Save result
+                        </Button>
+                    </StackPanel>
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Cursor" Value="Hand" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+            </Grid>
+        </Border>
+        
+        <Grid Visibility="Hidden" x:Name="NameInputPopup">
+            <Grid Background="Black" Opacity="0.5" />
+            <Border Padding="10" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border.Background>
+                    <ImageBrush ImageSource="/assets/background.jpg" Stretch="UniformToFill"/>
+                </Border.Background>
+                <StackPanel>
+                    <TextBlock Text="Enter your nickname" FontSize="24" Foreground="White" />
+                    <TextBox Margin="0 0 0 30" x:Name="NameInput" FontSize="24" />
+                    <Grid>
+                        <Button Click="Cancel" FontSize="24" Width="100" Content="Cancel" HorizontalAlignment="Left" />
+                        <Button Click="Save" FontSize="24" Width="100" Content="Save" HorizontalAlignment="Right" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

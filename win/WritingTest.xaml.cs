@@ -14,11 +14,13 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using Path = System.IO.Path;
 
 namespace win
 {
@@ -28,7 +30,8 @@ namespace win
     public partial class WritingTest : UserControl
     {
         private const string validKeys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private List<string> correctWords = new() { "one", "two", "three", "four", "one", "two", "three", "four", "one", "two", "three", "four", "one", "two", "three", "four" };
+        private List<string> correctWords = new();
+        private List<string> allWords = new();
 
         private int currentWordIndex = 0;
         private int currentLetterIndex = 0;
@@ -48,6 +51,11 @@ namespace win
         private DispatcherTimer dispatcherTimer = new();
         private Random random = new();
 
+        private double accuracy = 0;
+        private double wordsPerMinute = 0;
+
+        private BlurEffect blurEffect = new() { Radius = 5, KernelType = KernelType.Gaussian };
+
         public WritingTest()
         {
             InitializeComponent();
@@ -59,11 +67,10 @@ namespace win
             inlines = paragraph.Inlines;
 
             SetupTimer();
-            Reset();
+            Restart(this, new());
         }
         private void LoadWords()
         {
-            List<string> allWords = new();
 
             string file = @"pack://application:,,,/" + Assembly.GetExecutingAssembly().GetName().Name + ";component/assets/word_list.txt";
             using (var reader = new StreamReader(Application.GetResourceStream(new Uri(file)).Stream))
@@ -79,6 +86,14 @@ namespace win
                 correctWords.Add(allWords[random.Next(0, allWords.Count())]);
             }
         }
+        private void TakeRandomCorrectWords()
+        {
+            correctWords.Clear();
+            for (int i = 0; i < 100; i++)
+            {
+                correctWords.Add(allWords[random.Next(0, allWords.Count())]);
+            }
+        }
         private void SetupTimer()
         {
             dispatcherTimer.Tick += (object? sender, EventArgs e) =>
@@ -86,7 +101,7 @@ namespace win
                 timeLeft--;
                 if (timeLeft <= 0)
                 {
-                    Reset();
+                    Stop();
                 }
                 else
                 {
@@ -95,34 +110,36 @@ namespace win
             };
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
         }
-        void Reset()
+        private void Stop()
         {
             dispatcherTimer.Stop();
-            if (incorrectKeyPresses + correctKeyPresses == 0)
+            ResultView.Visibility = Visibility.Visible;
+            WritingView.Visibility = Visibility.Hidden;
+
+            int letterCountInCorrectWords = 0;
+            for (int i = 0; i < currentWordIndex + 1; i++)
             {
-                result.Text = "No characters typed";
-            }
-            else
-            {
-                int letterCountInCorrectWords = 0;
-                for (int i = 0; i < currentWordIndex + 1; i++)
+                if (!(errorLocations.TryGetValue(i, out var errors) && errors != null && errors.Count > 0))
                 {
-                    if (!(errorLocations.TryGetValue(i, out var errors) && errors != null && errors.Count > 0))
+                    if (i == currentWordIndex)
                     {
-                        if (i == currentWordIndex)
-                        {
-                            letterCountInCorrectWords += currentLetterIndex;
-                        }
-                        else
-                        {
-                            letterCountInCorrectWords += correctWords[i].Length + 1;
-                        }
+                        letterCountInCorrectWords += currentLetterIndex;
+                    }
+                    else
+                    {
+                        letterCountInCorrectWords += correctWords[i].Length + 1;
                     }
                 }
-                double accuracy = Math.Round((float)correctKeyPresses / (incorrectKeyPresses + correctKeyPresses) * 100, 2);
-                double wordsPerMinute = Math.Round((float)letterCountInCorrectWords / averageWordLength * 60 / testTimeInSeconds, 2);
-                result.Text = $"WPM: {wordsPerMinute}\nAccuracy: {accuracy}%";
             }
+            accuracy = Math.Round((float)correctKeyPresses / (incorrectKeyPresses + correctKeyPresses) * 100, 2);
+            wordsPerMinute = Math.Round((float)letterCountInCorrectWords / averageWordLength * 60 / testTimeInSeconds, 2);
+            Result.Text = $"Test length: {testTimeInSeconds} seconds\nWPM: {wordsPerMinute}\nAccuracy: {accuracy}%";
+        }
+        private void Restart(object sender, RoutedEventArgs e)
+        {
+            ResultView.Visibility = Visibility.Hidden;
+            WritingView.Visibility = Visibility.Visible;
+            Words.Focus();
             inlines.Clear();
             errorLocations.Clear();
             correctKeyPresses = 0;
@@ -131,8 +148,10 @@ namespace win
             currentLetterIndex = 0;
             isStarted = false;
             timeLeft = testTimeInSeconds;
+            TakeRandomCorrectWords();
             UpdateTimer();
             AddUnwrittenPartOfTest();
+            Words.CaretPosition = inlines.LastInline.ElementStart;
         }
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -144,6 +163,8 @@ namespace win
         {
             if (e.Key == Key.Space)
             {
+                if (currentLetterIndex == 0)
+                    return;
                 RemoveUnwrittenPartOfTest();
                 if (currentLetterIndex < correctWords[currentWordIndex].Length)
                 {
@@ -156,11 +177,10 @@ namespace win
                 currentWordIndex++;
                 if (currentWordIndex >= correctWords.Count)
                 {
-                    Reset();
+                    Stop();
                     return;
                 }
                 inlines.Add(new Run(" "));
-                Words.CaretPosition = inlines.LastInline.ElementEnd;
 
                 if (AnyErrorsIn(currentWordIndex - 1))
                 {
@@ -180,6 +200,7 @@ namespace win
                     correctKeyPresses++;
                 }
                 AddUnwrittenPartOfTest();
+                Words.CaretPosition = inlines.LastInline.ElementStart;
             }
             else if (e.Key == Key.Back)
             {
@@ -223,14 +244,11 @@ namespace win
                     TryRemoveError(currentWordIndex, currentLetterIndex);
                     AddUnwrittenPartOfTest();
                 }
+                Words.CaretPosition = inlines.LastInline.ElementStart;
             }
             else if (new List<Key>() { Key.Left, Key.Right, Key.Up, Key.Down, Key.PageDown, Key.PageUp, Key.Home, Key.End }.Contains(e.Key))
             {
                 e.Handled = true;
-            }
-            else if (e.Key == Key.Enter)
-            {
-                Reset();
             }
         }
         private void HandleKeyPress(object sender, KeyEventArgs e)
@@ -245,8 +263,8 @@ namespace win
 
                 RemoveUnwrittenPartOfTest();
                 WriteLetter(letter);
-                Words.CaretPosition = inlines.LastInline.ElementEnd;
                 AddUnwrittenPartOfTest();
+                Words.CaretPosition = inlines.LastInline.ElementStart;
             }
         }
         private bool TryGetLetter(Key key, out char letter)
@@ -326,6 +344,35 @@ namespace win
         private void UpdateTimer()
         {
             TimerUI.Text = $"Time left: {timeLeft}";
+        }
+        private void SavePopup(object sender, RoutedEventArgs e)
+        {
+            BlurBorder.Effect = blurEffect;
+            NameInputPopup.Visibility = Visibility.Visible;
+        }
+        private void Cancel(object sender, RoutedEventArgs e)
+        {
+            BlurBorder.Effect = null;
+            NameInputPopup.Visibility = Visibility.Hidden;
+        }
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            BlurBorder.Effect = null;
+            NameInputPopup.Visibility = Visibility.Hidden;
+            SaveButton.Visibility = Visibility.Hidden;
+            string nickname = NameInput.Text.Trim();
+            if (nickname == "")
+            {
+                nickname = "Anonymous";
+            }
+            string pathToFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HRF");
+            if (!Directory.Exists(pathToFolder))
+            {
+                Directory.CreateDirectory(pathToFolder);
+            }
+            var filePath = Path.Combine(pathToFolder, "WritingTestResults.txt");
+
+            File.AppendAllText(filePath, $"Username: {nickname}; Test length: {testTimeInSeconds} seconds; WPM: {wordsPerMinute}; Accuracy: {accuracy}%\n");
         }
     }
 }
