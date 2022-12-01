@@ -13,7 +13,7 @@ const Testing = () => (
     </div>
 
     <div className="grid grid-cols-4 gap-2 sm:justify-start justify-center w-full test-container relative z-[1]">
-      {test.map((card) => <Test key={card.id} {...card} />)}
+      {test.map((card) => <Test key={card.id} path={card.id} {...card} />)}
     </div>
   </section>
 );

@@ -1,9 +1,9 @@
-import ReactionTest from "../ReactionTest.css";
+// import ReactionTest from "../ReactionTest.css";
 
 const ReactionTest = () => {
     return (
         <>
-            <html lang="en">
+            {/* <html lang="en">
             <head>
                 <meta charset="UTF-8" />
                 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -32,11 +32,11 @@ const ReactionTest = () => {
                 <div class="message">Click Now!</div>
                 </div>
             </body>
-            </html>
+            </html> */}
         </>
     )
 };
-
+/*
 const mainMenu = document.querySelector(".main-menu");
 const clickableArea = document.querySelector(".clickable-area");
 const message = document.querySelector(".clickable-area .message");
@@ -145,5 +145,5 @@ playAgainBtn.addEventListener("click", () => {
   init();
   startGame();
 });
-
-  export default ReactionTest;
+*/
+export default ReactionTest;

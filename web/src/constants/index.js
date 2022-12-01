@@ -21,22 +21,22 @@ export const navLinks = [
 
 export const test = [
   {
-    id: "test-1",
+    id: "WritingTest",
     name: "Typing Speed",
     img: keyboard,
   },
   {
-    id: "test-2",
+    id: "ReactionTest",
     name: "Reaction Time",
     img: voltage,
   },
   {
-    id: "test-3",
+    id: "AimTest",
     name: "Aim Trainer",
     img: target,
   },
   {
-    id: "test-4",
+    id: "NumberMemoryTest",
     name: "Number Memory",
     img: numbers,
   },
