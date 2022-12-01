@@ -120,7 +120,7 @@ namespace win
             {
                 nickname = "Anonymous";
             }
-            string pathToFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HRF");
+            string pathToFolder = Path.Combine(Environment.CurrentDirectory, "HRF_TestResults");
             if (!Directory.Exists(pathToFolder))
             {
                 Directory.CreateDirectory(pathToFolder);

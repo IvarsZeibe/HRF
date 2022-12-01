@@ -115,6 +115,7 @@ namespace win
             dispatcherTimer.Stop();
             ResultView.Visibility = Visibility.Visible;
             WritingView.Visibility = Visibility.Hidden;
+            SaveButton.Visibility = Visibility.Visible;
 
             int letterCountInCorrectWords = 0;
             for (int i = 0; i < currentWordIndex + 1; i++)
@@ -365,7 +366,7 @@ namespace win
             {
                 nickname = "Anonymous";
             }
-            string pathToFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HRF");
+            string pathToFolder = Path.Combine(Environment.CurrentDirectory, "HRF_TestResults");
             if (!Directory.Exists(pathToFolder))
             {
                 Directory.CreateDirectory(pathToFolder);

@@ -84,6 +84,7 @@ namespace win
             TargetsRemaining.Visibility = Visibility.Hidden;
             timer.Stop();
             ResultView.Visibility = Visibility.Visible;
+            SaveButton.Visibility = Visibility.Visible;
             accuracy = Math.Round((double)targetCount / (targetCount + missedTargets) * 100, 2);
             averageTimePerTarget = timer.ElapsedMilliseconds / targetCount;
             Result.Text = $"Average time per target: {averageTimePerTarget}ms\nAccuracy: {accuracy}%\nClick to try again";
@@ -92,6 +93,7 @@ namespace win
         private void Restart(object sender, RoutedEventArgs e)
         {
             ResultView.Visibility = Visibility.Hidden;
+            TargetsRemaining.Text = "Click the target to start";
             TargetsRemaining.Visibility = Visibility.Visible;
             ReadyUpTest();
         }
@@ -148,7 +150,7 @@ namespace win
             {
                 nickname = "Anonymous";
             }
-            string pathToFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HRF");
+            string pathToFolder = Path.Combine(Environment.CurrentDirectory, "HRF_TestResults");
             if (!Directory.Exists(pathToFolder))
             {
                 Directory.CreateDirectory(pathToFolder);
