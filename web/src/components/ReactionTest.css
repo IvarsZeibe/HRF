@@ -7,12 +7,14 @@
     height: 100vh;
     width: 100%;
     cursor: pointer;
-    background: limegreen;
+    --tw-bg-opacity: 1;
+    background-color: rgb(0 4 15 / var(--tw-bg-opacity));
+    color: #fff;
     display: grid;
     place-items: center;
     font-size: 32px;
     font-family: "Roboto", sans-serif;
-    color: #fff;
+
   }
   
   .end-screen,
@@ -23,7 +25,7 @@
     width: 100%;
     top: 0;
     left: 0;
-    background: #0d3b66;
+    background: #020c29;
     color: #fff;
     font-family: "Roboto", sans-serif;
     text-align: center;
@@ -31,8 +33,10 @@
   
   .main-menu.active,
   .end-screen.active {
-    display: grid;
+    position: relative;
+    display: flex;
     place-items: center;
+    
   }
   
   .main-menu {
@@ -42,6 +46,9 @@
   .container {
     max-width: 700px;
     padding: 0 32px;
+    border: none;
+    background: #020c29;
+    color: #fff;
   }
   
   .main-menu h1 {
@@ -67,7 +74,8 @@
   
   .end-screen .play-again-btn {
     border: none;
-    background: #faf0ca;
+    background: #020c29;
+    color: #fff;
     font-size: 20px;
     padding: 8px 32px;
     margin-top: 20px;
