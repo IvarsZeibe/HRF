@@ -110,12 +110,14 @@ const ControlPanel = ({user}) => {
         })
     }
 
-    function AddTestData() {
-        BackendService.addMyTestResult("ReactionTimeTest", {ReactionTime: 200});
-        BackendService.addMyTestResult("AimTest", {AverageTimePerTarget: 500, Accuracy: 1});
-        BackendService.addMyTestResult("TypingTest", {WordsPerMinute: 70, Accuracy: 1});
-        BackendService.addMyTestResult("NumberMemoryTest", {DigitCount: 6});
+    async function AddTestData() {
+        await Promise.all([
+            BackendService.addMyTestResult("ReactionTimeTest", {ReactionTime: 200}),
+            BackendService.addMyTestResult("AimTest", {AverageTimePerTarget: 500, Accuracy: 1}),
+            BackendService.addMyTestResult("TypingTest", {WordsPerMinute: 70, Accuracy: 1}),
+            BackendService.addMyTestResult("NumberMemoryTest", {DigitCount: 6})]);
         update();
+        
     }
 
     function getOverlayData() {

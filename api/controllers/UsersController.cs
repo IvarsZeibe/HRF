@@ -72,6 +72,10 @@ public class UsersController : ControllerBase
             return NotFound();
         }
 
+        context.AimTests.RemoveRange(context.AimTests.Where(test => test.UserId == user.Id));
+        context.ReactionTimeTests.RemoveRange(context.ReactionTimeTests.Where(test => test.UserId == user.Id));
+        context.NumberMemoryTests.RemoveRange(context.NumberMemoryTests.Where(test => test.UserId == user.Id));
+        context.TypingTests.RemoveRange(context.TypingTests.Where(test => test.UserId == user.Id));
         context.Users.Remove(user);
         await context.SaveChangesAsync();
 
@@ -86,6 +90,10 @@ public class UsersController : ControllerBase
         {
             return NotFound();
         }
+        context.AimTests.RemoveRange(context.AimTests.Where(test => test.UserId == user.Id));
+        context.ReactionTimeTests.RemoveRange(context.ReactionTimeTests.Where(test => test.UserId == user.Id));
+        context.NumberMemoryTests.RemoveRange(context.NumberMemoryTests.Where(test => test.UserId == user.Id));
+        context.TypingTests.RemoveRange(context.TypingTests.Where(test => test.UserId == user.Id));
         context.Users.Remove(user);
         await context.SaveChangesAsync();
 
