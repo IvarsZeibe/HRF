@@ -1,7 +1,19 @@
 import "./ReactionTest.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AuthenticationService from "../services/AuthenticationService";
+import { useNavigate } from "react-router-dom";
+import BackendService from "../services/BackendService";
 
 const ReactionTest = () => {
+  const navigate = useNavigate();
+  const [scoreIsSaved, setScoreIsSaved] = useState(false);
+  const [reactionTime, setReactionTime] = useState();
+  function save() {
+    BackendService.addMyTestResult("ReactionTimeTest", {ReactionTime: reactionTime})
+    .then(res => setScoreIsSaved(true))
+    .catch(err => console.log(err));
+  }
+
   useEffect(() => {
     const mainMenu = document.querySelector(".main-menu");
     const clickableArea = document.querySelector(".clickable-area");
@@ -37,7 +49,10 @@ const ReactionTest = () => {
     };
 
     const startGame = () => {
-      clickableArea.class = "bg-primary";
+      mainMenu.classList.remove("active");
+      endScreen.classList.remove("active");
+      clickableArea.classList.add("active");
+
       message.innerHTML = "Wait for the Green Color.";
       message.style.color = "#fff";
 
@@ -49,13 +64,13 @@ const ReactionTest = () => {
     };
 
     function mainMenuClick() {
-      mainMenu.classList.remove("active");
       startGame();
     }
     mainMenu.addEventListener("click", mainMenuClick);
 
     const endGame = () => {
       endScreen.classList.add("active");
+      clickableArea.classList.remove("active");
       clearTimeout(timer);
 
       let total = 0;
@@ -65,6 +80,8 @@ const ReactionTest = () => {
       });
 
       let averageScore = Math.round(total / scores.length);
+      setReactionTime(averageScore);
+      setScoreIsSaved(false);
 
       reactionTimeText.innerHTML = `${averageScore} ms`;
     };
@@ -107,7 +124,7 @@ const ReactionTest = () => {
         displayTooSoon();
       }
     }
-    clickableArea.addEventListener("click", clickableAreaClick);
+    clickableArea.addEventListener("mousedown", clickableAreaClick);
     function playAgainBtnClick() {
       endScreen.classList.remove("active");
       init();
@@ -127,6 +144,8 @@ const ReactionTest = () => {
             <h1>Reaction Time Test</h1>
             <div className="reaction-time-text">234 ms</div>
             <button className="play-again-btn">Play Again</button>
+            {!AuthenticationService.isSignedIn() && <button onClick={() => navigate("/signin")} className="play-again-btn">Sign in</button>}
+            {AuthenticationService.isSignedIn() && !scoreIsSaved && <button onClick={save} className="play-again-btn">Save</button>}
           </div>
         </div>
 
@@ -138,7 +157,7 @@ const ReactionTest = () => {
           </div>
         </div>
 
-        <div className="clickable-area">
+        <div className="clickable-area bg-primary">
           <div className="message">Click Now!</div>
         </div>
       </>

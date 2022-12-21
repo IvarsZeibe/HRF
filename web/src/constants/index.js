@@ -1,5 +1,7 @@
 import { keyboard, voltage, target, numbers, facebook, instagram, linkedin, twitter} from "../assets";
 
+export const url = 'https://localhost:5001/api/';
+
 export const navLinks = [
   {
     id: "home",
@@ -10,12 +12,20 @@ export const navLinks = [
     title: "Testing",
   },
   {
-    id: "aboutUs",
-    title: "About Us",
+    id: "controlPanel",
+    title: "Control Panel",
+  },
+  {
+    id: "profile",
+    title: "My profile",
   },
   {
     id: "signIn",
     title: "Sign In",
+  },
+  {
+    id: "signOut",
+    title: "Sign Out",
   },
 ];
 

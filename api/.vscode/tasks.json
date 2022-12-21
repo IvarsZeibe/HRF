@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/api.csproj",
+                "${workspaceFolder}/API.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/api.csproj"
+                "${workspaceFolder}/API.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

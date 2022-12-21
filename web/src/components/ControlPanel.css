@@ -1,0 +1,59 @@
+.controlPanel h1 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    background: gainsboro;
+    border-radius: 10px;
+    margin: 5px;
+}
+.controlPanel h1:hover {
+    cursor: pointer;
+    background: rgb(192, 192, 192);
+}
+.controlPanel .testResults {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.controlPanel .break {
+    flex-basis: 100%;
+    height: 0;
+}
+.controlPanel .testResults td, .controlPanel .testResults th {
+    padding: 5px;
+}
+.controlPanel .testResults tbody tr:nth-child(odd) {
+    background-color: rgb(241, 241, 241);
+}
+.controlPanel #overlay {
+    position: fixed;
+    background: #00000066;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.controlPanel #overlay div {
+    padding: 5px;
+    background: white;
+}
+.controlPanel input {
+    box-shadow: inset 0 1px 3px #ddd;
+    border: 1px solid #ccc;
+    padding: 5px;
+    display: inline-block;
+    margin: 4px 4px;
+}
+.controlPanel button {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-block;
+    margin: 4px 4px;
+}
+.controlPanel button:hover {
+    cursor: pointer;
+}

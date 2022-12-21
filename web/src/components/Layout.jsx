@@ -2,11 +2,11 @@ import styles from "../style";
 import { Footer, Navbar } from "../components";
 import { Outlet } from "react-router-dom";
 
-const Layout = () => (
-  <div className="bg-primary w-full overflow-hidden">
+const Layout = ({user}) => {
+  return <div className="bg-primary w-full overflow-hidden">
     <div className={`${styles.paddingX} ${styles.flexCenter}`}>
       <div className={`${styles.boxWidth}`}>
-        <Navbar />
+        <Navbar user={user} />
       </div>
     </div>
 
@@ -22,6 +22,6 @@ const Layout = () => (
       </div>
     </div>
   </div>
-);
+};
 
 export default Layout;

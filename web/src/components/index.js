@@ -8,6 +8,9 @@ import ReactionTest from "./ReactionTest";
 import AimTest from "./AimTest";
 import NumberMemoryTest from "./NumberMemoryTest";
 import WritingTest from "./WritingTest";
+import ControlPanel from "./ControlPanel";
+import Table from "./Table";
+import Profile from "./Profile";
 
 export {
   Navbar,
@@ -20,4 +23,7 @@ export {
   AimTest,
   NumberMemoryTest,
   WritingTest,
+  ControlPanel,
+  Table,
+  Profile,
 };
