@@ -54,14 +54,19 @@ public class TypingTestController : ControllerBase
         }).ToListAsync();
     }
     [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<TypingTest>>> GetAllTestResults()
+    public ActionResult<IEnumerable<TypingTestWithOwner>> GetAllTestResults()
     {
         if (context.TypingTests is null) 
         {
             return NotFound();
         }
 
-        return await context.TypingTests.ToListAsync();
+        return context.TypingTests.ToList().Select(t => new TypingTestWithOwner {
+            Id = t.Id,
+            User = context.Users.Find(t.UserId).Username,
+            Accuracy = t.Accuracy,
+            WordsPerMinute = t.WordsPerMinute
+            }).ToList();
     }
     [HttpPost]
     [Authorize]

@@ -53,14 +53,19 @@ public class NumberMemoryTestController : ControllerBase
         }).ToListAsync();
     }
     [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<NumberMemoryTest>>> GetAllTestResults()
+    public ActionResult<IEnumerable<NumberMemoryTestWithOwner>> GetAllTestResults()
     {
         if (context.NumberMemoryTests is null) 
         {
             return NotFound();
         }
 
-        return await context.NumberMemoryTests.ToListAsync();
+        return context.NumberMemoryTests.ToList().Select(t => new NumberMemoryTestWithOwner {
+            Id = t.Id,
+            User = context.Users.Find(t.UserId).Username,
+            DigitCount = t.DigitCount
+            })
+            .ToList();
     }
     [HttpPost]
     [Authorize]

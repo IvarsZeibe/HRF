@@ -54,14 +54,20 @@ public class AimTestController : ControllerBase
         }).ToListAsync();
     }
     [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<AimTest>>> GetAllTestResults()
+    public ActionResult<IEnumerable<AimTestWithOwner>> GetAllTestResults()
     {
         if (context.AimTests is null) 
         {
             return NotFound();
         }
 
-        return await context.AimTests.ToListAsync();
+        return context.AimTests.ToList().Select(t => new AimTestWithOwner {
+            Id = t.Id,
+            User = context.Users.Find(t.UserId).Username,
+            Accuracy = t.Accuracy,
+            AverageTimePerTarget = t.AverageTimePerTarget
+            })
+            .ToList();
     }
     [HttpPost]
     [Authorize]

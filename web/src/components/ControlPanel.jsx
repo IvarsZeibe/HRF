@@ -26,6 +26,7 @@ const ControlPanel = ({user}) => {
     const [isOverlayVisible, setIsOverlayVisible] = useState(false);
     const [uneditables, setUneditables] = useState([]);
     const [sendKeys, setSendKeys] = useState([]);
+    const [hiddenIndices, setHiddenIndices] = useState();
     const [sendData, setSendData] = useState([]);
     const [sendTypes, setSendTypes] = useState([]);
 
@@ -42,7 +43,6 @@ const ControlPanel = ({user}) => {
     const [saveHandler, setSaveHandler] = useState2(() => {});
 
     useEffect(() => {
-        console.log("test");
         update();
     }, [user, shouldUpdate]);
 
@@ -50,7 +50,7 @@ const ControlPanel = ({user}) => {
         BackendService.getUsers()
         .then(u => { 
             if (u.length > 0) {
-                setUsers(createEditableTable(u.map(el => {return {...el, password: ""}}), [0],
+                setUsers(createEditableTable(u.map(el => {return {...el, password: ""}}), [0], [0],
                     (data, keys) => BackendService.changeUserData(...data).then(update),
                     (el) => BackendService.deleteUser(el.id).then(update),
                     Object.keys(u[0]).concat("password (leave empty to not change)")))
@@ -62,7 +62,7 @@ const ControlPanel = ({user}) => {
         addTestTable("AimTest", setAimTests, setAimTestsSummary);
     }
 
-    function createEditableTable(objectList, uneditablesIndices, onSave, onDelete, titles) {
+    function createEditableTable(objectList, uneditablesIndices, hiddenIndicies, onSave, onDelete, titles) {
         if (objectList.length > 0) {
             let keys = []
             if (titles === undefined) {
@@ -78,7 +78,7 @@ const ControlPanel = ({user}) => {
                 let elements = Object.values(el).map(e => e.toString());
                 let x = [...elements];
                 elements.push(<button onClick={() => {
-                    openOverlay(keys, x, uneditablesIndices, Object.values(el).map(e => typeof(e)));
+                    openOverlay(keys, x, uneditablesIndices, Object.values(el).map(e => typeof(e)), hiddenIndices);
                     setSaveHandler(handler);
                 }}>Edit</button>)
                 elements.push((<button onClick={() => {
@@ -86,21 +86,22 @@ const ControlPanel = ({user}) => {
                 }}>Delete</button>));
                 return elements;
             });
-            return {keys: keys, values: values}
+            return {keys: keys, values: values, hiddenIndices: hiddenIndicies}
         }
         return {keys: ["empty"], values: []}
     }
-    function openOverlay(keys, data, uneditables, types) {
+    function openOverlay(keys, data, uneditables, types, hiddenIndices) {
         setSendKeys(keys);
         setSendData(data);
         setUneditables(uneditables);
         setIsOverlayVisible(true);
         setSendTypes(types);
+        setHiddenIndices(hiddenIndices);
     }
     function addTestTable(testName, resultSetter, summarySetter) {
         BackendService.getAllTestResultsFor(testName)
         .then(tests => {
-            resultSetter(createEditableTable(tests, [0, 1],
+            resultSetter(createEditableTable(tests, [0, 1], [0],
                 (data, keys) => {BackendService.changeTestResult(testName, Object.fromEntries(data.map((d, i) => [keys[i], d]))).then(update)},
                 (el) => {BackendService.deleteTestResult(testName, el.id).then(update)}));
         });
@@ -125,7 +126,11 @@ const ControlPanel = ({user}) => {
             if (uneditables.includes(i)) {
                 return val.toString();
             } else {
-                return <input onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.value, ...sendData.slice(i + 1)))}} value={val} />
+                if (sendTypes[i] == "boolean") {
+                    return <input type="checkbox" checked={val == 'true'} onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.checked.toString(), ...sendData.slice(i + 1)))}} value={val} />
+                } else {
+                    return <input onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.value, ...sendData.slice(i + 1)))}} value={val} />
+                }
             }
         })];
     }
@@ -139,7 +144,7 @@ const ControlPanel = ({user}) => {
                     return parseFloat(value);
                 }
             case "boolean":
-                return value === "true";
+                return value == "true";
             default: 
                 return value.toString();
         }
@@ -163,28 +168,28 @@ const ControlPanel = ({user}) => {
 
                 <h1 onClick={() => {setIsReactionTimeTestsVisible(!isReactionTimeTestsVisible)}}>Reaction time test results</h1>
                 { isReactionTimeTestsVisible && <div className="testResults">
-                    <Table theadData={reactionTimeTests.keys} tbodyData={reactionTimeTests.values} />
+                    <Table theadData={reactionTimeTests.keys} tbodyData={reactionTimeTests.values} hiddenIndices={reactionTimeTests.hiddenIndices} />
                     <div className="break" />
                     <Table theadData={reactionTimeTestsSummary.keys} tbodyData={reactionTimeTestsSummary.values} />
                 </div> }
 
                 <h1 onClick={() => {setIsAimTestsVisible(!isAimTestsVisible)}}>Aim test results</h1>
                 { isAimTestsVisible && <div className="testResults">
-                    <Table theadData={aimTests.keys} tbodyData={aimTests.values} />
+                    <Table theadData={aimTests.keys} tbodyData={aimTests.values} hiddenIndices={aimTests.hiddenIndices} />
                     <div className="break" />
                     <Table theadData={aimTestsSummary.keys} tbodyData={aimTestsSummary.values} />
                 </div> }
 
                 <h1 onClick={() => {setIsTypingTestsVisible(!isTypingTestsVisible)}}>Typing test results</h1>
                 { isTypingTestsVisible && <div className="testResults">
-                    <Table theadData={typingTests.keys} tbodyData={typingTests.values} />
+                    <Table theadData={typingTests.keys} tbodyData={typingTests.values} hiddenIndices={typingTests.hiddenIndices} />
                     <div className="break" />
                     <Table theadData={typingTestsSummary.keys} tbodyData={typingTestsSummary.values} />
                 </div> }
 
                 <h1 onClick={() => {setIsNumberMemoryTestsVisible(!isNumberMemoryTestsVisible)}}>Number memory test results</h1>
                 { isNumberMemoryTestsVisible && <div className="testResults">
-                    <Table theadData={numberMemoryTests.keys} tbodyData={numberMemoryTests.values} />
+                    <Table theadData={numberMemoryTests.keys} tbodyData={numberMemoryTests.values} hiddenIndices={numberMemoryTests.hiddenIndices} />
                     <div className="break" />
                     <Table theadData={numberMemoryTestsSummary.keys} tbodyData={numberMemoryTestsSummary.values} />
                 </div> }
@@ -192,7 +197,7 @@ const ControlPanel = ({user}) => {
                 {isOverlayVisible && 
                 <div id="overlay">
                     <div>
-                        <Table theadData={sendKeys} tbodyData={getOverlayData()} />
+                        <Table theadData={sendKeys} tbodyData={getOverlayData()} hiddenIndices={numberMemoryTests.hiddenIndices} />
                         <br />
                         <button onClick={() => {setIsOverlayVisible(false)}} style={{float: "left"}}>Cancel</button>
                         <button onClick={() => {saveHandler(sendData.map((el, i) => parse(el, sendTypes[i])))}} style={{float: "right"}}>Save</button>

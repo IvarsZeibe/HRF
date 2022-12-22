@@ -53,14 +53,18 @@ public class ReactionTimeTestController : ControllerBase
         }).ToListAsync();
     }
     [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<ReactionTimeTest>>> GetAllTestResults()
+    public ActionResult<IEnumerable<ReactionTimeTestWithOwner>> GetAllTestResults()
     {
         if (context.ReactionTimeTests is null) 
         {
             return NotFound();
         }
 
-        return await context.ReactionTimeTests.ToListAsync();
+        return context.ReactionTimeTests.ToList().Select(t => new ReactionTimeTestWithOwner {
+            Id = t.Id,
+            User = context.Users.Find(t.UserId).Username,
+            ReactionTime = t.ReactionTime
+            }).ToList();
     }
     [HttpPost]
     [Authorize]

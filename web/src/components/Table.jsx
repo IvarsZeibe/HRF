@@ -1,9 +1,9 @@
-const Table = ({theadData, tbodyData}) => {
+const Table = ({theadData, tbodyData = null, hiddenIndices = []}) => {
     return (
     <table style={{background: "white"}}>
         <thead>
             <tr>
-                {theadData.map(heading => {
+                {theadData.filter((_, i) => !hiddenIndices.includes(i)).map(heading => {
                     return <th key={heading}>{heading}</th>
                 })}
             </tr>
@@ -11,7 +11,7 @@ const Table = ({theadData, tbodyData}) => {
         <tbody>
             {tbodyData.map((tr, index1) => {
                 return <tr key={index1}>
-                    {tr.map((td, index2) => {
+                    {tr.filter((_, i) => !hiddenIndices.includes(i)).map((td, index2) => {
                         return <td key={index2}>{td}</td>;
                     })}
                 </tr>;
