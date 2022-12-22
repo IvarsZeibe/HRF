@@ -55,6 +55,7 @@ const ReactionTest = () => {
 
       message.innerHTML = "Wait for the Green Color.";
       message.style.color = "#fff";
+      clickableArea.style.backgroundColor = "#020c29";
 
       let randomNumber = Math.floor(Math.random() * 4000 + 3000);
       timer = setTimeout(setGreenColor, randomNumber);
@@ -80,12 +81,14 @@ const ReactionTest = () => {
       });
 
       let averageScore = Math.round(total / scores.length);
+      console.log(averageScore);
+      console.log(scores);
       setReactionTime(averageScore);
       setScoreIsSaved(false);
 
       reactionTimeText.innerHTML = `${averageScore} ms`;
     };
-
+    
     const displayReactionTime = (rt) => {
       clickableArea.style.backgroundColor = "#020c29";
       message.innerHTML = `<div class='reaction-time-text'>${rt} ms</div>Click to continue.`;
@@ -107,7 +110,6 @@ const ReactionTest = () => {
     };
 
     function clickableAreaClick() {
-      console.log('clicked');
       if (greenDisplayed) {
         let clickTime = Date.now();
         let reactionTime = clickTime - timeNow;
@@ -133,7 +135,7 @@ const ReactionTest = () => {
     playAgainBtn.addEventListener("click", playAgainBtnClick);
     return () => {
       mainMenu.removeEventListener("click", mainMenuClick);
-      clickableArea.removeEventListener("click", clickableAreaClick);
+      clickableArea.removeEventListener("mousedown", clickableAreaClick);
       playAgainBtn.removeEventListener("click", playAgainBtnClick);
     };
   }, []);

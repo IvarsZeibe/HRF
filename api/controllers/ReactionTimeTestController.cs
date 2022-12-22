@@ -166,7 +166,7 @@ public class ReactionTimeTestController : ControllerBase
         if (myTestResults.Count() == 0) {
             return NotFound();
         }
-        int BestReactionTime = myTestResults.Max(el => el.ReactionTime);
+        int BestReactionTime = myTestResults.Min(el => el.ReactionTime);
         return new ReactionTimeTestDetailedSummary() {
             TotalTestsCompleted = myTestResults.Count(),
             AverageReactionTime = myTestResults.Average(el => el.ReactionTime),
@@ -174,8 +174,8 @@ public class ReactionTimeTestController : ControllerBase
             BestReactionTimeRank = context.ReactionTimeTests
                 .ToList()
                 .GroupBy(el => el.UserId)
-                .Select(el => el.Max(x => x.ReactionTime))
-                .OrderByDescending(el => el)
+                .Select(el => el.Min(x => x.ReactionTime))
+                .OrderBy(el => el)
                 .Select((el, i) => new {element = el, rank = i + 1})
                 .FirstOrDefault(el => el.element == BestReactionTime)?.rank ?? 0,
         };

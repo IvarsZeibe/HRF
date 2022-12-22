@@ -170,7 +170,7 @@ public class AimTestController : ControllerBase
             return NotFound();
         }
         float bestAccuracy = myTestResults.Max(el => el.Accuracy);
-        int bestAverageTimePerTarget = myTestResults.Max(el => el.AverageTimePerTarget);
+        int bestAverageTimePerTarget = myTestResults.Min(el => el.AverageTimePerTarget);
         return new AimTestDetailedSummary() {
             TotalTestsCompleted = myTestResults.Count(),
             AverageAccuracy = myTestResults.Average(el => el.Accuracy),
@@ -187,8 +187,8 @@ public class AimTestController : ControllerBase
             BestAverageTimePerTargetRank = context.AimTests
                 .ToList()
                 .GroupBy(el => el.UserId)
-                .Select(el => el.Max(x => x.AverageTimePerTarget))
-                .OrderByDescending(el => el)
+                .Select(el => el.Min(x => x.AverageTimePerTarget))
+                .OrderBy(el => el)
                 .Select((el, i) => new {element = el, rank = i + 1})
                 .FirstOrDefault(el => el.element == bestAverageTimePerTarget)?.rank ?? 0,
         };
