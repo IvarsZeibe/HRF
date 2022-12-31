@@ -19,9 +19,7 @@ const ReactionTest = () => {
     const clickableArea = document.querySelector(".clickable-area");
     const message = document.querySelector(".clickable-area .message");
     const endScreen = document.querySelector(".end-screen");
-    const reactionTimeText = document.querySelector(
-      ".end-screen .reaction-time-text"
-    );
+    const reactionTimeText = document.querySelector(".end-screen .reaction-time-text");
     const playAgainBtn = document.querySelector(".end-screen .play-again-btn");
 
     let timer;
@@ -102,7 +100,7 @@ const ReactionTest = () => {
     };
 
     const displayTooSoon = () => {
-      clickableArea.style.backgroundColor = "";
+      clickableArea.style.backgroundColor = "#020c29";
       message.innerHTML = "Too Soon. Click to continue";
       message.style.color = "#fff";
       waitingForStart = true;

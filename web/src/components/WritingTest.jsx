@@ -1,3 +1,5 @@
+import "./WritingTest.css"
+
 const WritingTest = () => {
 
 };
