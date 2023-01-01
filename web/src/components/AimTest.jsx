@@ -1,19 +1,18 @@
 import "./AimTest.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import AuthenticationService from "../services/AuthenticationService";
 import { useNavigate } from "react-router-dom";
 import BackendService from "../services/BackendService";
 
 const AimTest = () => {
-
-    const dataFetchedRef = useRef(false);
+    const navigate = useNavigate();
+    const [isTestDone, setIsTestDone] = useState(false);
+    const [isScoreSavend, setIsScoreSavend] = useState(false);
+    const [tens, setTens] = useState(0);
+    const [seconds, setSeconds] = useState(0);
+    const [accuracy, setAccuracy] = useState(0);
 
     useEffect(() => {
-
-        // Prevents the JS running twice
-        if (dataFetchedRef.current) return;
-        dataFetchedRef.current = true;
-
         const startBtn = document.querySelector('#start')
         const screens = document.querySelectorAll('.screen')
         const targetsEl = document.querySelector('#targets')
@@ -33,7 +32,8 @@ const AimTest = () => {
         var Interval;
         board.parentNode.classList.add('up');
 
-        startBtn.addEventListener('click', (event) => {
+
+        function startBtnClick(event) {
             screens[0].classList.add('up');
             screens[1].classList.remove('up');
             startGame();
@@ -45,9 +45,10 @@ const AimTest = () => {
             seconds = "00";
             appendTens.innerHTML = tens;
             appendSeconds.innerHTML = seconds;
-        })
+        };
+        startBtn.addEventListener("click", startBtnClick);
 
-        board.addEventListener('click', (event) => {
+        function boardClick (event) {
             if (event.target.classList.contains('circle')) {
                 targetsClicked++;
                 setTargets();
@@ -57,8 +58,8 @@ const AimTest = () => {
             else if (event.target.classList.contains('board')) {
                 missedTargets++;
             }
-        })
-
+        };
+        board.addEventListener("mousedown", boardClick);
         function startTimer () {
             tens++; 
             
@@ -105,15 +106,11 @@ const AimTest = () => {
             accuracy = Math.round((targetCount / (targetCount + missedTargets)) * 100, 2);
             targetsEl.parentNode.classList.add('hide');
             secondsEl.parentNode.classList.add('hide');
-            board.innerHTML = `
-            <p class="testData">Time: 
-            <span class="primary">${seconds}.${tens}s</span><br>
-            Accuracy: 
-            <span class="primary">${accuracy}%</span>
-            </p>
-            <button class="time-btn" onclick="window.location.reload()">Restart</button>
-            <button class = "time-btn">Sign In</button>
-            `
+            setTens(tens);
+            setSeconds(seconds);
+            setAccuracy(accuracy);
+            setIsTestDone(true);
+            board.innerHTML = '';
         }
 
         function createRandomCircles() {
@@ -155,25 +152,41 @@ const AimTest = () => {
             return colors[Math.floor(Math.random() * colors.length)]
         }
 
-        // kkas te neiet
-        // return () => {
-        //     startBtn.removeEventListener("click", startBtnClick);
-        //     board.removeEventListener("click", boardClick);
-        // };
+        return () => {
+            startBtn.removeEventListener("click", startBtnClick);
+            board.removeEventListener("mousedown", boardClick);
+        };
 
     }, []);
 
     return (
         <>
-            <div class="screen">
-                <p class="header">Aim Training</p>
-                <a href="#" id="start">Start the game</a>
+            <div className="screen">
+                <p className="header">Aim Training</p>
+                <button id="start">Start the game</button>
             </div>
 
-            <div class="screen">
-                <p class="ongoingTestData"><span id="targets">10</span> targets left</p>
-                <p class="ongoingTestData"><span id="seconds">00</span>:<span id="tens">00</span></p>
-                <div class="board" id="board"></div>
+            <div className="screen">
+                <p className="ongoingTestData"><span id="targets">10</span> targets left</p>
+                <p className="ongoingTestData"><span id="seconds">00</span>:<span id="tens">00</span></p>
+                <div className="board" id="board">
+                    {isTestDone && 
+                    <>
+                        <p class="testData">Time: 
+                        <span className="primary"> {seconds}.{tens}s</span><br/>
+                        Accuracy: 
+                        <span className="primary"> {accuracy}%</span>
+                        </p>
+                        <button className="time-btn" onClick={() => {window.location.reload()}}>Restart</button>
+                        {AuthenticationService.isSignedIn() && !isScoreSavend &&
+                        <button onClick={() => {
+                            BackendService.addMyTestResult("aimTest", {Accuracy: accuracy, AverageTimePerTarget: (seconds * 1000 + tens * 10)/10})
+                            .then(_ => setIsScoreSavend(true))
+                        }} className="time-btn">Save</button>}
+                        {!AuthenticationService.isSignedIn() &&
+                        <button onClick={() => {navigate("/signin")}} className="time-btn">Sign In</button>}
+                    </>}
+                </div>
             </div>
         </>
     );
