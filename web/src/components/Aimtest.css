@@ -1,13 +1,5 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
-  color: #fff;
-  font-family: "Roboto", sans-serif;
-  overflow: hidden;
   margin: 0;
-  text-align: center;
 }
 
 a {
@@ -19,47 +11,66 @@ a:hover {
   color: #16D9E3;
 }
 
+.header {
+  margin: 8px 0;
+  font-size: 70px;
+  font-weight: 600;
+  font-family: "Roboto", sans-serif;
+  color: #fff;
+}
+
+.ongoingTestData {
+  margin: 8px 0;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+}
+
+.testData {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 300;
+  font-family: "Roboto", sans-serif;
+}
+
 #start {
-  font-size: 2rem;
   background-color: transparent;
   color: #fff;
   padding: 15px;
   cursor: pointer;
+  font-size: 32px;
+  font-weight: 800;
+  font-family: "Roboto", sans-serif;
 }
 
 #start:hover {
   color: #16D9E3;
 }
 
-h1 {
-  line-height: 1.4;
-  font-size: 4rem;
-}
-
 .screen {
+  max-width: inherit;
+  width: inherit;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  width: 100vw;
   background: #020c29;
 }
 
-
-
 .screen.up {
-  display:none;
+  display: none;
 }
 
 .time-btn {
-  border:none;
+  border: none;
   background-color: transparent;
   color: #fff;
   cursor: pointer;
-  font-family: "Roboto", sans-serif;
-  padding: .5rem 1rem;
   font-size: 2rem;
+  font-family: "Roboto", sans-serif;
+  padding: 8px 0;
 }
 
 .time-btn:hover {
@@ -100,7 +111,7 @@ h1 {
     font-size: 1rem;
   }
 
-  h1 {
+  p {
     font-size: 2.5rem;
   }
 
@@ -119,7 +130,7 @@ h1 {
     font-size: .7rem;
   }
 
-  h1 {
+  p {
     font-size: 2rem;
   }
 

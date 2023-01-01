@@ -1,82 +1,80 @@
+body {
+  margin: 0;
+}
 
-  body {
-    margin: 0;
-  }
-  
-  .clickable-area {
-    height: 100vh;
-    width: 100%;
-    cursor: pointer;
-    --tw-bg-opacity: 1;
-    background-color: rgb(0 4 15 / var(--tw-bg-opacity));
-    color: #fff;
-    display: none;
-    place-items: center;
-    font-size: 32px;
-    font-family: "Roboto", sans-serif;
+.clickable-area {
+  height: 100vh;
+  width: 100%;
+  cursor: pointer;
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 4 15 / var(--tw-bg-opacity));
+  color: #fff;
+  display: none;
+  place-items: center;
+  font-size: 32px;
+  font-family: "Roboto", sans-serif;
+}
 
-  }
-  
-  .end-screen,
-  .main-menu {
-    display: none;
-    place-items: center;
-    height: 100vh;
-    width: 100%;
-    background: #020c29;
-    color: #fff;
-    font-family: "Roboto", sans-serif;
-    text-align: center;
-  }
-  
-  .active {
-    position: relative;
-    display: grid;
-    place-items: center;
-  }
-  
-  .main-menu {
-    cursor: pointer;
-  }
-  
-  .container {
-    max-width: 700px;
-    padding: 0 32px;
-    border: none;
-    background: #020c29;
-    color: #fff;
-  }
-  
-  .main-menu h1 {
-    font-size: 70px;
-    margin: 8px 0;
-  }
-  
-  .container p {
-    font-size: 20px;
-    line-height: 2;
-    font-weight: 800;
-    margin: 0;
-  }
-  
-  .end-screen h1 {
-    font-size: 30px;
-  }
-  
-  .reaction-time-text {
-    font-size: 100px;
-    font-weight: 900;
-  }
-  
-  .end-screen .play-again-btn {
-    border: none;
-    background: #020c29;
-    color: #fff;
-    font-size: 20px;
-    padding: 8px 32px;
-    margin-top: 20px;
-    text-transform: uppercase;
-    font-weight: 900;
-    letter-spacing: 4px;
-    cursor: pointer;
-  }
+.end-screen,
+.main-menu {
+  display: none;
+  place-items: center;
+  height: 100vh;
+  width: 100%;
+  background: #020c29;
+  color: #fff;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+}
+
+.active {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.main-menu {
+  cursor: pointer;
+}
+
+.container {
+  max-width: 700px;
+  padding: 0 32px;
+  border: none;
+  background: #020c29;
+  color: #fff;
+}
+
+.main-menu h1 {
+  font-size: 70px;
+  margin: 8px 0;
+}
+
+.container p {
+  font-size: 20px;
+  line-height: 2;
+  font-weight: 800;
+  margin: 0;
+}
+
+.end-screen h1 {
+  font-size: 30px;
+}
+
+.reaction-time-text {
+  font-size: 100px;
+  font-weight: 900;
+}
+
+.end-screen .play-again-btn {
+  border: none;
+  background: #020c29;
+  color: #fff;
+  font-size: 20px;
+  padding: 8px 32px;
+  margin-top: 20px;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 4px;
+  cursor: pointer;
+}

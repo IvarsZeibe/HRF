@@ -31,10 +31,11 @@ const AimTest = () => {
         var missedTargets = 0;
         var targetsClicked = 0;
         var Interval;
+        board.parentNode.classList.add('up');
 
         startBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            screens[0].classList.add('up')
+            screens[0].classList.add('up');
+            screens[1].classList.remove('up');
             startGame();
             targetsClicked = 0;
             missedTargets = 0;
@@ -47,7 +48,6 @@ const AimTest = () => {
         })
 
         board.addEventListener('click', (event) => {
-            event.stopPropagation();
             if (event.target.classList.contains('circle')) {
                 targetsClicked++;
                 setTargets();
@@ -106,11 +106,11 @@ const AimTest = () => {
             targetsEl.parentNode.classList.add('hide');
             secondsEl.parentNode.classList.add('hide');
             board.innerHTML = `
-            <h1>Time: 
-            <span class="primary">${seconds}.${tens}s</span>
+            <p class="testData">Time: 
+            <span class="primary">${seconds}.${tens}s</span><br>
             Accuracy: 
             <span class="primary">${accuracy}%</span>
-            </h1>
+            </p>
             <button class="time-btn" onclick="window.location.reload()">Restart</button>
             <button class = "time-btn">Sign In</button>
             `
@@ -140,7 +140,6 @@ const AimTest = () => {
 
             circle.classList.add('circle')
             board.append(circle)
-            //console.log(circle)
 
             //? colors
             const color = getRandomColor()
@@ -167,13 +166,13 @@ const AimTest = () => {
     return (
         <>
             <div class="screen">
-                <h1>Aim Training</h1>
+                <p class="header">Aim Training</p>
                 <a href="#" id="start">Start the game</a>
             </div>
 
             <div class="screen">
-                <h3><span id="targets">10</span> targets left</h3>
-                <h3><span id="seconds">00</span>:<span id="tens">00</span></h3>
+                <p class="ongoingTestData"><span id="targets">10</span> targets left</p>
+                <p class="ongoingTestData"><span id="seconds">00</span>:<span id="tens">00</span></p>
                 <div class="board" id="board"></div>
             </div>
         </>
