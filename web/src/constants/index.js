@@ -21,11 +21,11 @@ export const navLinks = [
   },
   {
     id: "signIn",
-    title: "Sign In",
+    title: "Log In",
   },
   {
     id: "signOut",
-    title: "Sign Out",
+    title: "Log Out",
   },
 ];
 
