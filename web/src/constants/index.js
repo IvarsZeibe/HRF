@@ -25,7 +25,7 @@ export const navLinks = [
   },
   {
     id: "signOut",
-    title: "Sign Out",
+    title: "Log Out",
   },
 ];
 
