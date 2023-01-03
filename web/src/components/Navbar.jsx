@@ -18,7 +18,7 @@ const Navbar = ({user}) => {
   function getNavElement(nav) {
     if (nav.id === "signOut")
     {
-      return <button onClick={() => AuthenticationService.signOut()}>Sign out</button>;
+      return <button onClick={() => AuthenticationService.signOut()}>Log out</button>;
     }
     else if (nav.id == "signIn")
     {

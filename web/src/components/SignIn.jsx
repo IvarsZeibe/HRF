@@ -1,98 +1,181 @@
 import { useState, useEffect } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 import AuthenticationService from "../services/AuthenticationService";
-import { useNavigate } from "react-router-dom";
 
 const SignIn = ({user, setUser}) => {
-    const navigate = useNavigate();
-    const [loginData, setLoginData] = useState({});
-    const [registerData, setRegisterData] = useState({});
-    const [isSigningIn, setIsSigningIn] = useState(true);
+  const navigate = useNavigate();
+  const [signInFormData, setSignInFormData] = useState({});
+  const [registerFormData, setRegisterFormData] = useState({});
+  const [isSigningIn, setIsSigningIn] = useState(true);
 
-    const handleRegisterChange = (event) => {
-      const name = event.target.name;
-      const value = event.target.value;
-      setRegisterData(values => ({...values, [name]: value}))
-    }
-    const handleLoginChange = (event) => {
-      const name = event.target.name;
-      const value = event.target.value;
-      setLoginData(values => ({...values, [name]: value}))
-    }
-    const login = (e) => {
-      e.preventDefault();
-      AuthenticationService.signIn(loginData.Email, loginData.Password)
-      .then(() => {
-        AuthenticationService.getUser()
-        .then(u => {
-          setUser(u);
-          navigate('/');
-        });
-      });    
-    }
-    const register = (e) => {
-      e.preventDefault();
-      AuthenticationService.signUp(registerData.Email, registerData.Username, registerData.Password)
-      .then(() => {
-        AuthenticationService.getUser()
-        .then(u => {
-          navigate('/');
-        });
-      });
-    }
+  const handleInputChange = (event, formData, setFormData) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setFormData((formData) => ({ ...formData, [name]: value }));
+  };
 
-    useEffect(() => {
-        if (user) {
-            navigate('/');
-        }
-    }, []);
+  const handleSubmit = (event, formData, setFormData, action) => {
+    event.preventDefault();
+    action(formData)
+      .then(() => AuthenticationService.getUser())
+      .then((u) => {
+        setUser(u);
+        navigate("/");
+      })
+      .catch((error) => console.error(error));
+    setFormData({});
+  };
 
-    useEffect(() => {
-      console.log(isSigningIn);
-    }, [isSigningIn]);
-
-    return <>
-    { isSigningIn &&
-    <div style={{background: "white"}}>
-      <form onSubmit={login}>
-        <label htmlFor="email">
-          Email: 
-          <input className="text-input" type="email" name="Email" value={loginData.Email || ""} onChange={handleLoginChange}></input>
-        </label>
-        <br />
-        <label htmlFor="password">
-          Password:
-          <input className="text-input" type="password" name="Password" value={loginData.Password || ""} onChange={handleLoginChange}></input>
-        </label>
-        <br />
-        <input className="submit-input" type="submit" value="Login" />
-      </form>
-      <br />
-      <button onClick={() => setIsSigningIn(false)}>Don't have an account? Sign up!</button>
-    </div> }
-    
-    { !isSigningIn &&
-    <div style={{background: "white"}}>
-      <form onSubmit={register}>
-        <label htmlFor="username">
-          Username:
-          <input className="text-input" type="text" name="Username" value={registerData.Username || ""} onChange={handleRegisterChange}></input>
-        </label>
-        <br />
-        <label htmlFor="email">
-          Email:
-          <input className="text-input" type="email" name="Email" value={registerData.Email || ""} onChange={handleRegisterChange}></input>
-        </label>
-        <br />
-        <label htmlFor="password">
-          Password:
-          <input className="text-input" type="password" name="Password" value={registerData.Password || ""} onChange={handleRegisterChange}></input>
-        </label>
-        <br />
-        <input className="submit-input" type="submit" value="Register" />
-      </form>
-    <button onClick={() => setIsSigningIn(true)}>Already have an account? Sign In!</button>
-  </div> }
-  </>
+  return (<>
+    {AuthenticationService.isSignedIn() ? <Navigate to="/" /> :
+    <div
+      className="flex justify-center items-center h-full"
+      style={{ margin: "110px" }}
+    >
+      {isSigningIn ? (
+        <form
+          className="flex flex-col items-center px-10 py-12 rounded-20px max-w-370px test-card justify-center items-center"
+          style={{
+            background: "var(--black-gradient)",
+            boxShadow: "var(--card-shadow)",
+            borderRadius: "20px",
+            width: "400px",
+            minHeight: "400px",
+          }}
+          onSubmit={(event) =>
+            handleSubmit(
+              event,
+              signInFormData,
+              setSignInFormData,
+              AuthenticationService.signIn
+            )
+          }
+        >
+          <h1 className="text-2xl font-bold text-center text-white mb-8">
+            Log In Your Account
+          </h1>
+          <div className="flex flex-col">
+            <input
+              className="text-input mt-2 rounded 20px"
+              type="email"
+              name="Email"
+              value={signInFormData.Email || ""}
+              onChange={(event) =>
+                handleInputChange(event, signInFormData, setSignInFormData)
+              }
+              placeholder="Email"
+              style={{ width: "250px" }}
+            ></input>
+            <input
+              className="text-input mt-2 rounded 20px"
+              type="password"
+              name="Password"
+              value={signInFormData.Password || ""}
+              onChange={(event) =>
+                handleInputChange(event, signInFormData, setSignInFormData)
+              }
+              placeholder="Password"
+              style={{ width: "250px" }}
+            ></input>
+          </div>
+          <button
+            style={{ width: "250px", color: "white" }}
+            className="submit-input mt-8"
+            type="submit"
+            value="Sign Up"
+          >
+            Log In
+          </button>
+          <p style={{ textAlign: "center" }} className="text-white mt-4">
+            Don't have an account?{" "}
+            <a
+              href="#"
+              className="text-white font-bold"
+              onClick={() => setIsSigningIn(false)}
+            >
+              Sign Up!
+            </a>
+          </p>
+        </form>
+      ) : (
+        <form
+          className="flex flex-col items-center px-10 py-12 rounded-20px max-w-370px test-card justify-center items-center"
+          style={{
+            background: "var(--black-gradient)",
+            boxShadow: "var(--card-shadow)",
+            borderRadius: "20px",
+            width: "400px",
+            minHeight: "400px",
+          }}
+          onSubmit={(event) =>
+            handleSubmit(
+              event,
+              registerFormData,
+              setRegisterFormData,
+              AuthenticationService.signUp
+            )
+          }
+        >
+          <h1 className="text-2xl font-bold text-center text-white mb-8">
+            Create Your Account
+          </h1>
+          <div className="flex flex-col">'
+            <input
+              className="text-input mt-2 rounded 20px"
+              type="text"
+              name="Username"
+              value={registerFormData.Username || ""}
+              onChange={(event) =>
+                handleInputChange(event, registerFormData, setRegisterFormData)
+              }
+              placeholder="Username"
+              style={{ width: "250px" }}
+            ></input>
+            <input
+              className="text-input mt-2 rounded 20px"
+              type="email"
+              name="Email"
+              value={registerFormData.Email || ""}
+              onChange={(event) =>
+                handleInputChange(event, registerFormData, setRegisterFormData)
+              }
+              placeholder="Email"
+              style={{ width: "250px" }}
+            ></input>
+            <input
+              className="text-input mt-2 rounded 20px"
+              type="password"
+              name="Password"
+              value={registerFormData.Password || ""}
+              onChange={(event) =>
+                handleInputChange(event, registerFormData, setRegisterFormData)
+              }
+              placeholder="Password"
+              style={{ width: "250px" }}
+            ></input>
+          </div>
+          <button
+            style={{ width: "250px", color: "white" }}
+            className="submit-input mt-8"
+            type="submit"
+            value="Sign Up"
+          >
+            Sign Up
+          </button>
+          <p style={{ textAlign: "center" }} className="text-white mt-4">
+            Already have an account?{" "}
+            <a
+              href="#"
+              className="text-white font-bold"
+              onClick={() => setIsSigningIn(true)}
+            >
+              Log In!
+            </a>
+          </p>
+        </form>
+      )}
+    </div>}
+  </>);
 };
 
 export default SignIn;
