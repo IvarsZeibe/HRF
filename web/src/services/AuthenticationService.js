@@ -1,7 +1,7 @@
 import { url } from "../constants";
 
 class AuthenticationSerivce {
-    async signIn(Email, Password) {
+    async signIn({Email, Password}) {
         await fetch(url + "Auth/login", {
           method: 'POST',
           mode: 'cors',
@@ -25,7 +25,7 @@ class AuthenticationSerivce {
             sessionStorage.setItem('jwtExpirationTime', data.tokenExpirationTime);
         });
     }
-    async signUp(Email, Username, Password) {
+    async signUp({Email, Username, Password}) {
         await fetch(url + "Auth/register", {
             method: 'POST',
             mode: 'cors',
