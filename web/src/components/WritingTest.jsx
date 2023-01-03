@@ -19,9 +19,6 @@ const WritingTest = () => {
     const durationInMinutes = 0;
 
     useKeyPress(key => {
-
-        screens[0].classList.remove('hide');
-
         let updatedOutgoingChars = outgoingChars;
         let updatedIncomingChars = incomingChars;
 
