@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 import AuthenticationService from "../services/AuthenticationService";
 
-const SignIn = () => {
+const SignIn = ({user, setUser}) => {
   const navigate = useNavigate();
   const [signInFormData, setSignInFormData] = useState({});
   const [registerFormData, setRegisterFormData] = useState({});
   const [isSigningIn, setIsSigningIn] = useState(true);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user]);
 
   const handleInputChange = (event, formData, setFormData) => {
     const name = event.target.name;
@@ -23,7 +16,7 @@ const SignIn = () => {
 
   const handleSubmit = (event, formData, setFormData, action) => {
     event.preventDefault();
-    action(formData.Username, formData.Email, formData.Password)
+    action(formData)
       .then(() => AuthenticationService.getUser())
       .then((u) => {
         setUser(u);
@@ -33,7 +26,8 @@ const SignIn = () => {
     setFormData({});
   };
 
-  return (
+  return (<>
+    {AuthenticationService.isSignedIn() ? <Navigate to="/" /> :
     <div
       className="flex justify-center items-center h-full"
       style={{ margin: "110px" }}
@@ -180,8 +174,8 @@ const SignIn = () => {
           </p>
         </form>
       )}
-    </div>
-  );
+    </div>}
+  </>);
 };
 
 export default SignIn;

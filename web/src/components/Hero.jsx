@@ -13,7 +13,7 @@ const Hero = () => {
           </h1>
         </div>
 
-        <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
+        <p className={`${styles.paragraph} max-w-[550px] mt-1 px-5 py-1`}>
           The Human Research Foundation (HRF) is a private platform built for the purposes of behavior analysis, cognitive testing and monitoring.
         </p>
       </div>
