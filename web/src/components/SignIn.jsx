@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import AuthenticationService from "../services/AuthenticationService";
 import { useNavigate } from "react-router-dom";
-import "./SignIn.css";
 
 const SignIn = ({user, setUser}) => {
     const navigate = useNavigate();
