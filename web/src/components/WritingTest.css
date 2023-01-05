@@ -34,6 +34,10 @@ h1 {
     color: silver;
 }
 
+.resetBtn {
+    padding: 20px;
+}
+
 .hide {
     display: none;
 }
