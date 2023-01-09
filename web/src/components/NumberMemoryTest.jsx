@@ -1,15 +1,20 @@
 import "./NumberMemoryTest.css"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthenticationService from "../services/AuthenticationService";
+import BackendService from "../services/BackendService";
 
 const NumberMemoryTest = () => {
-    
+    const navigate = useNavigate();
+    const [digitCount, setDigitCount] = useState(1);
+    const [scoreIsSaved, setScoreIsSaved] = useState(false);
     let numberArray = [];
     let time;
     let levelArray;
     let level;
 
     useEffect(() => {
-        numberArray = Array.from({ length: 20 }, () => Math.floor(Math.random() * 9));
+        numberArray = Array.from({ length: 20 }, () => Math.floor((Math.random() * 100) % 10));
         const header = document.querySelector(".header");
         const arrayDisplay = document.querySelector(".arrayDisplay");
         const startBtn = document.querySelector(".start");
@@ -52,6 +57,7 @@ const NumberMemoryTest = () => {
                 if (time <= 0) {
                     arrayDisplay.classList.add("hide");
                     inputField.classList.remove("hide");
+                    inputField.focus();
                     clearInterval(countdownTimer);
                 } else {
                     time -= 1;
@@ -59,7 +65,7 @@ const NumberMemoryTest = () => {
             }, 1000)
         }
 
-        inputField.addEventListener("keyup", function(event) {
+        function onKeyUp(event) {
             if (event.keyCode === 13) {
                 compileArray();
                 let inputText = inputField.value;
@@ -67,16 +73,19 @@ const NumberMemoryTest = () => {
                 arrayDisplay.classList.remove("hide");
                 inputField.classList.add("hide");
                 levelDisplay.classList.remove("hide")
-                arrayDisplay.innerHTML = "Displayed numbers<br>" + levelArray;
-                userNumberDisplay.innerHTML = "User input numbers<br>" + inputText;
+                arrayDisplay.innerHTML = "Displayed<br>" + levelArray;
+                userNumberDisplay.innerHTML = "User input<br>" + inputText;
                 levelDisplay.innerHTML = "Level: " + level;
                 if(JSON.stringify(inputText) == JSON.stringify(levelArray)) {
                     continueBtn.classList.remove("hide");
+                    setDigitCount(level);
                 } else {
-                    resetBtn.classList.remove("hide");
+                    resetBtn.parentElement.classList.remove("hide");
+                    setDigitCount(level - 1);
                 };
             }
-        });
+        }
+        inputField.addEventListener("keyup", onKeyUp);
 
         const continueBtnClick = () => {
             level++;
@@ -92,7 +101,18 @@ const NumberMemoryTest = () => {
         }
         continueBtn.addEventListener("click", continueBtnClick)
 
+        return () => {
+            startBtn.removeEventListener("click", startBtnClick)
+            inputField.removeEventListener("keyup", onKeyUp)
+            continueBtn.removeEventListener("click", continueBtnClick)
+        }
     }, []);
+
+    function save() {
+        BackendService.addMyTestResult("NumberMemoryTest", { DigitCount: digitCount })
+        .then(res => setScoreIsSaved(true))
+        .catch(err => console.log(err));
+    }
 
     return (
         <div className="screen">
@@ -103,7 +123,11 @@ const NumberMemoryTest = () => {
             <input type="text" className="inputField hide"></input>
             <button className="start">Start</button>
             <button className="continue hide">Continue</button>
-            <button className="resetBtn hide" onClick={() => {window.location.reload()}}>Reset</button>
+            <div className="hide">
+                <button className="resetBtn" onClick={() => {window.location.reload()}}>Reset</button>
+                {!AuthenticationService.isSignedIn() && <button onClick={() => navigate("/signin")} className="play-again-btn">Sign in</button>}
+                {AuthenticationService.isSignedIn() && !scoreIsSaved && <button onClick={save} className="play-again-btn">Save</button>}
+            </div>
         </div>
     )
 
