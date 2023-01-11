@@ -133,3 +133,21 @@
   background: rgba(255, 255, 255, 0.6);
   filter: blur(750px);
 }
+
+.test-card-settings {
+  box-shadow: var(--card-shadow);
+  border-radius: 20px;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  font-family: Poppins;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 32px;
+  color: white;
+  text-align: center;
+  background: var(--black-gradient);
+}

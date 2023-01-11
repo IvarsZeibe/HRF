@@ -31,9 +31,9 @@ export const navLinks = [
 
 export const test = [
   {
-    id: "WritingTest",
-    name: "Typing Speed",
-    img: keyboard,
+    id: "AimTest",
+    name: "Aim Trainer",
+    img: target,
   },
   {
     id: "ReactionTest",
@@ -41,9 +41,9 @@ export const test = [
     img: voltage,
   },
   {
-    id: "AimTest",
-    name: "Aim Trainer",
-    img: target,
+    id: "WritingTest",
+    name: "Typing Speed",
+    img: keyboard,
   },
   {
     id: "NumberMemoryTest",
