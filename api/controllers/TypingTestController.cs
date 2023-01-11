@@ -138,6 +138,15 @@ public class TypingTestController : ControllerBase
         if (typingTest is null) {
             return NotFound();
         }
+        var errors = new
+        {
+            Accuracy = data.Accuracy < 0 || data.Accuracy > 1 ? "Must be betweeen 0 and 1" : null,
+            WordsPerMintute = data.WordsPerMinute < 0 ? "Must be above zero" : null
+        };
+        if (errors.GetType().GetProperties().Any(p => p.GetValue(errors) is not null))
+        {
+            return BadRequest(errors);
+        }
 
         typingTest.Accuracy = data.Accuracy;
         typingTest.WordsPerMinute = data.WordsPerMinute;

@@ -180,7 +180,7 @@ const AimTest = () => {
                         <button className="time-btn" onClick={() => {window.location.reload()}}>Restart</button>
                         {AuthenticationService.isSignedIn() && !isScoreSavend &&
                         <button onClick={() => {
-                            BackendService.addMyTestResult("aimTest", {Accuracy: accuracy, AverageTimePerTarget: (seconds * 1000 + tens * 10)/10})
+                            BackendService.addMyTestResult("aimTest", {Accuracy: accuracy / 100, AverageTimePerTarget: (seconds * 1000 + tens * 10)/10})
                             .then(_ => setIsScoreSavend(true))
                         }} className="time-btn">Save</button>}
                         {!AuthenticationService.isSignedIn() &&

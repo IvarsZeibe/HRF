@@ -118,10 +118,15 @@ public class UsersController : ControllerBase
         {
             return BadRequest();
         }
-
-        if (context.Users.Any(u => (u.Email == userData.Email || u.Username == userData.Username) && u.Id != userData.Id)) {
-            return BadRequest();
+        
+        if (!AuthService.IsValidUserDataChange(context, userData, out RegisterData errorMessages))
+        {
+            return BadRequest(errorMessages);
         }
+
+        // if (context.Users.Any(u => (u.Email == userData.Email || u.Username == userData.Username) && u.Id != userData.Id)) {
+        //     return BadRequest();
+        // }
         user.Email = userData.Email;
         user.Username = userData.Username;
         if (userData.Password != "") {
@@ -140,7 +145,11 @@ public class UsersController : ControllerBase
 
         if (user == null || !authService.VerifyPassword(user.Id, passwordChange.OldPassword, user.Password))
         {
-            return BadRequest();
+            return BadRequest("Invalid password");
+        }
+        if (!AuthService.IsPasswordValid(passwordChange.NewPassword, out string message))
+        {
+            return BadRequest(message);
         }
 
         user.Password = authService.HashPassword(user.Id, passwordChange.NewPassword);
@@ -156,7 +165,11 @@ public class UsersController : ControllerBase
 
         if (user == null || context.Users.Any(u => u.Email == email.Value))
         {
-            return BadRequest();
+            return BadRequest("Email already used");
+        }
+        if (!AuthService.IsEmailValid(email.Value, out string message))
+        {
+            return BadRequest(message);
         }
 
         user.Email = email.Value;
@@ -172,7 +185,11 @@ public class UsersController : ControllerBase
 
         if (user == null || context.Users.Any(u => u.Username == username.Value))
         {
-            return BadRequest();
+            return BadRequest("Username already used");
+        }
+        if (!AuthService.IsUsernameValid(username.Value, out string message))
+        {
+            return BadRequest(message);
         }
 
         user.Username = username.Value;

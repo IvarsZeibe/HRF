@@ -1,4 +1,4 @@
-const Table = ({theadData, tbodyData = null, hiddenIndices = []}) => {
+const Table = ({theadData, tbodyData = null, hiddenIndices = [], customTDStyle = {}}) => {
     return (
     <table style={{background: "white"}}>
         <thead>
@@ -12,7 +12,7 @@ const Table = ({theadData, tbodyData = null, hiddenIndices = []}) => {
             {tbodyData.map((tr, index1) => {
                 return <tr key={index1}>
                     {tr.filter((_, i) => !hiddenIndices.includes(i)).map((td, index2) => {
-                        return <td key={index2}>{td}</td>;
+                        return <td style={customTDStyle} key={index2}>{td}</td>;
                     })}
                 </tr>;
             })}

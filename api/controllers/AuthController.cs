@@ -33,13 +33,13 @@ public class AuthController: ControllerBase
 
         if (user == null)
         {
-            return BadRequest(new { email = "no user with this email" });
+            return BadRequest(new { Error = "Incorrect email or password" });
         }
 
         var passwordValid = authService.VerifyPassword(user.Id, model.Password, user.Password);
         if (!passwordValid)
         {
-            return BadRequest(new { password = "invalid password" });
+            return BadRequest(new { Error = "Incorrect email or password" });
         }
 
         return authService.GetAuthData(user.Id);
@@ -50,16 +50,15 @@ public class AuthController: ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        if (context.Users.Any()) {
-            var emailUniq = IsEmailUniq(model.Email);
-            if (!emailUniq) return BadRequest(new { email = "user with this email already exists" });
-            var usernameUniq = IsUsernameUniq(model.Username);
-            if (!usernameUniq) return BadRequest(new { username = "user with this email already exists" });
+        if (!AuthService.IsValidNewAccount(context, model, out RegisterData errorMessages))
+        {
+            return BadRequest(errorMessages);
         }
 
         var user = new User(model.Username, model.Email, "");
         user.Password = authService.HashPassword(user.Id, model.Password);
-        if (context.Users.Where(u => u.IsAdmin).Count() == 0) {
+        if (context.Users.Where(u => u.IsAdmin).Count() == 0)
+        {
             user.IsAdmin = true;
         }
         context.Users.Add(user);

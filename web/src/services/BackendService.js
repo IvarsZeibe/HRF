@@ -33,15 +33,21 @@ class BackendService {
                     return response.text();
                 }
             } else {
-                throw Error(response.statusText);
+                if (returnType == "json") {
+                    return response.json().then(res => {throw res});
+                } else if (returnType == "text") {
+                    return response.text().then(res => {throw res});
+                } else {
+                    throw Error(response.statusText);
+                }
             }
         });
     }
     async getUsers() {
-        return await this.requestFromAPI("GET", "Users", null, true, "json");
+        return await this.requestFromAPI("GET", "Users", null, true, "none");
     }
     async getMyUser() {
-        return await this.requestFromAPI("GET", "Users/current", null, true, "json");
+        return await this.requestFromAPI("GET", "Users/current", null, true, "none");
     }
     async deleteUser(id) {
         return await this.requestFromAPI("DELETE", `Users/${id}`, null, true, "none");
@@ -52,23 +58,23 @@ class BackendService {
     // can't change id
     async changeUserData(id, username, email, isAdmin, password) {
         let data = { Id: id, Password: password, Email: email, Username: username, IsAdmin: isAdmin };
-        return await this.requestFromAPI("PUT", "Users", data, true, "none");
+        return await this.requestFromAPI("PUT", "Users", data, true, "json");
     }
     async changeMyPassword(newPassword, oldPassword) {
         let data = { NewPassword: newPassword, OldPassword: oldPassword };
-        return await this.requestFromAPI("POST", "Users/password", data, true, "none");
+        return await this.requestFromAPI("POST", "Users/password", data, true, "text");
     }
     async changeMyEmail(email) {
-        return await this.requestFromAPI("POST", "Users/email", {Value: email}, true, "none");
+        return await this.requestFromAPI("POST", "Users/email", {Value: email}, true, "text");
     }
     async changeMyUsername(username) {
-        return await this.requestFromAPI("POST", "Users/username", {Value: username}, true, "none");
+        return await this.requestFromAPI("POST", "Users/username", {Value: username}, true, "text");
     }
     async getAllTestResultsFor(testType) {
-        return await this.requestFromAPI("GET", testType+"/all", null, false, "json");
+        return await this.requestFromAPI("GET", testType+"/all", null, false, "none");
     }
     async getMyTestResults(testType) {
-        return await this.requestFromAPI("GET", testType, null, true, "json");
+        return await this.requestFromAPI("GET", testType, null, true, "none");
     }
     async deleteTestResult(testType, id) {
         return await this.requestFromAPI("DELETE", testType+"/"+id, null, true, "none");
@@ -86,7 +92,7 @@ class BackendService {
         return await this.requestFromAPI("GET", testType+"/summary", null, true, "none");
     }
     async addMyTestResult(testType, data) {
-        return await this.requestFromAPI("POST", testType, data, true, "json");
+        return await this.requestFromAPI("POST", testType, data, true, "none");
     }
 }
 

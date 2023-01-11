@@ -26,9 +26,11 @@ const ControlPanel = ({user}) => {
     const [isOverlayVisible, setIsOverlayVisible] = useState(false);
     const [uneditables, setUneditables] = useState([]);
     const [sendKeys, setSendKeys] = useState([]);
+    const [sendTitles, setSendTitles] = useState([]);
     const [hiddenIndices, setHiddenIndices] = useState();
     const [sendData, setSendData] = useState([]);
     const [sendTypes, setSendTypes] = useState([]);
+    const [errorMessages, setErrorMessages] = useState({});
 
     const [shouldUpdate, setShouldUpdate] = useState();
 
@@ -51,38 +53,52 @@ const ControlPanel = ({user}) => {
         .then(u => { 
             if (u.length > 0) {
                 setUsers(createEditableTable(u.map(el => {return {...el, password: ""}}), [0], [0],
-                    (data, keys) => BackendService.changeUserData(...data).then(update),
-                    (el) => BackendService.deleteUser(el.id).then(update),
-                    Object.keys(u[0]).concat("password (leave empty to not change)")))
+                    (data, keys) => BackendService.changeUserData(...data),
+                    (el) => BackendService.deleteUser(el.id),
+                    Object.keys(u[0]).map(str => str.charAt(0).toUpperCase() + str.slice(1)).concat("Password (leave empty to not change)")))
             }
         });
-        addTestTable("ReactionTimeTest", setReactionTimeTests, setReactionTimeTestsSummary);
-        addTestTable("TypingTest", setTypingTests, setTypingTestsSummary);
-        addTestTable("NumberMemoryTest", setNumberMemoryTests, setNumberMemoryTestsSummary);
-        addTestTable("AimTest", setAimTests, setAimTestsSummary);
+        addTestTable("ReactionTimeTest", setReactionTimeTests, setReactionTimeTestsSummary, [2]);
+        addTestTable("TypingTest", setTypingTests, setTypingTestsSummary, [2]);
+        addTestTable("NumberMemoryTest", setNumberMemoryTests, setNumberMemoryTestsSummary, [2]);
+        addTestTable("AimTest", setAimTests, setAimTestsSummary, [2]);
     }
 
     function createEditableTable(objectList, uneditablesIndices, hiddenIndicies, onSave, onDelete, titles) {
         if (objectList.length > 0) {
-            let keys = []
+            let keys = Object.keys(objectList[0]).map(str => str.charAt(0).toUpperCase() + str.slice(1));
             if (titles === undefined) {
-                keys = Object.keys(objectList[0]).map(str => str.charAt(0).toUpperCase() + str.slice(1));
-            } else {
-                keys = titles;
+                titles = Object.keys(objectList[0]).map(str => str.charAt(0).toUpperCase() + str.slice(1));
             }
             let values = objectList.map(el => {
                 let handler = (data) => {
-                    onSave(data, keys);
-                    setIsOverlayVisible(false);
+                    onSave(data, keys)
+                    .then(() => {update(); setErrorMessages({}); setIsOverlayVisible(false);})
+                    .catch((error) => {
+                        let newErrorMessages = {};
+                        document.querySelectorAll("#overlay input")
+                        .forEach(el => {
+                            if (error[el.name.toLowerCase()]) {
+                                el.style.border = "solid red 1px";
+                                newErrorMessages[el.name] = error[el.name.toLowerCase()];
+                            } else {
+                                el.style.border = "1px solid #ccc";
+                            }
+                        });
+                        Object.keys(error)
+                        .forEach(key => newErrorMessages[key.charAt(0).toUpperCase() + key.slice(1)] = error[key]);
+                        console.log(newErrorMessages)
+                        setErrorMessages(newErrorMessages);
+                    });
                 }
                 let elements = Object.values(el).map(e => e.toString());
                 let x = [...elements];
                 elements.push(<button onClick={() => {
-                    openOverlay(keys, x, uneditablesIndices, Object.values(el).map(e => typeof(e)), hiddenIndices);
+                    openOverlay(keys, titles, x, uneditablesIndices, Object.values(el).map(e => typeof(e)), hiddenIndices);
                     setSaveHandler(handler);
                 }}>Edit</button>)
                 elements.push((<button onClick={() => {
-                    onDelete(el);
+                    onDelete(el).then(update);
                 }}>Delete</button>));
                 return elements;
             });
@@ -90,20 +106,39 @@ const ControlPanel = ({user}) => {
         }
         return {keys: ["empty"], values: []}
     }
-    function openOverlay(keys, data, uneditables, types, hiddenIndices) {
+    function openOverlay(keys, titles, data, uneditables, types, hiddenIndices) {
         setSendKeys(keys);
+        setSendTitles(titles);
         setSendData(data);
         setUneditables(uneditables);
         setIsOverlayVisible(true);
         setSendTypes(types);
         setHiddenIndices(hiddenIndices);
     }
-    function addTestTable(testName, resultSetter, summarySetter) {
+    function addTestTable(testName, resultSetter, summarySetter, intDataTypeIndicies = []) {
         BackendService.getAllTestResultsFor(testName)
         .then(tests => {
             resultSetter(createEditableTable(tests, [0, 1], [0],
-                (data, keys) => {BackendService.changeTestResult(testName, Object.fromEntries(data.map((d, i) => [keys[i], d]))).then(update)},
-                (el) => {BackendService.deleteTestResult(testName, el.id).then(update)}));
+                (data, keys) => {
+                    let newErrorMessages = {};
+                    document.querySelectorAll("#overlay input")
+                    .forEach((el) => {
+                        if (intDataTypeIndicies.includes(keys.indexOf(el.name)) && parseInt(data[keys.indexOf(el.name)]) != data[keys.indexOf(el.name)]) {
+                            el.style.border = "solid red 1px";
+                            newErrorMessages[el.name] = "Must be a full number";
+                        } else {
+                            el.style.border = "1px solid #ccc";
+                        }
+                    });
+                    if (Object.keys(newErrorMessages).length == 0) {
+                        return BackendService.changeTestResult(testName, Object.fromEntries(data.map((d, i) => [keys[i], d])))
+                    } else {
+                        console.log('test');
+                        setErrorMessages(newErrorMessages);
+                        return new Promise(() => {});
+                    }
+                },
+                (el) => BackendService.deleteTestResult(testName, el.id)));
         });
         BackendService.getTestResultSummary(testName)
         .then(result => {
@@ -126,10 +161,22 @@ const ControlPanel = ({user}) => {
             if (uneditables.includes(i)) {
                 return val.toString();
             } else {
+                console.log(errorMessages)
                 if (sendTypes[i] == "boolean") {
-                    return <input type="checkbox" checked={val == 'true'} onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.checked.toString(), ...sendData.slice(i + 1)))}} value={val} />
+                    return <div>
+                        <input name={sendKeys[i]} type="checkbox" checked={val == 'true'} onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.checked.toString(), ...sendData.slice(i + 1)))}} value={val} />
+                        <div className="text-red-500">{errorMessages[sendKeys[i]]}</div>
+                    </div>;
+                } else if (sendTypes[i] == "number") {
+                    return <div>
+                        <input name={sendKeys[i]} type="number" onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.value, ...sendData.slice(i + 1)))}} value={val} />
+                        <div className="text-red-500">{errorMessages[sendKeys[i]]}</div>
+                    </div>
                 } else {
-                    return <input onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.value, ...sendData.slice(i + 1)))}} value={val} />
+                    return <div>
+                        <input name={sendKeys[i]} onChange={(e) => {setSendData(sendData.slice(0, i).concat(e.target.value, ...sendData.slice(i + 1)))}} value={val} />
+                        <div className="text-red-500">{errorMessages[sendKeys[i]]}</div>
+                    </div>
                 }
             }
         })];
@@ -197,9 +244,9 @@ const ControlPanel = ({user}) => {
                 {isOverlayVisible && 
                 <div id="overlay">
                     <div>
-                        <Table theadData={sendKeys} tbodyData={getOverlayData()} hiddenIndices={numberMemoryTests.hiddenIndices} />
+                        <Table theadData={sendTitles} tbodyData={getOverlayData()} hiddenIndices={numberMemoryTests.hiddenIndices} customTDStyle={{verticalAlign: "top"}} />
                         <br />
-                        <button onClick={() => {setIsOverlayVisible(false)}} style={{float: "left"}}>Cancel</button>
+                        <button onClick={() => {setIsOverlayVisible(false); setErrorMessages({});}} style={{float: "left"}}>Cancel</button>
                         <button onClick={() => {saveHandler(sendData.map((el, i) => parse(el, sendTypes[i])))}} style={{float: "right"}}>Save</button>
                     </div>
                 </div>}

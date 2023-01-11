@@ -37,6 +37,7 @@ const Profile = ({ user }) => {
   const [newPassword, setNewPassword] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [errorMessages, setErrorMessages] = useState({});
 
   const aimTestImg = test.find((t) => t.name === "Aim Trainer").img;
   const reactionTestImg = test.find(
@@ -47,20 +48,20 @@ const Profile = ({ user }) => {
     (card) => card.name === "Number Memory"
   ).img;
 
-  function submitEmail() {
+  function submitEmail() {      
+    setErrorMessages({});
     BackendService.changeMyEmail(email)
-      .then((res) => console.log("success?"))
-      .catch((err) => console.log("error"));
+      .catch((err) => setErrorMessages({Email: err}));
   }
   function submitUsername() {
+    setErrorMessages({});
     BackendService.changeMyUsername(username)
-      .then((res) => console.log("success?"))
-      .catch((err) => console.log("error"));
+      .catch((err) => setErrorMessages({Username: err}));
   }
   function submitPassword() {
+    setErrorMessages({});
     BackendService.changeMyPassword(newPassword, oldPassword)
-      .then((res) => console.log("success?"))
-      .catch((err) => console.log("error"));
+      .catch((err) => setErrorMessages({NewPassword: err}));
   }
 
   function update() {
@@ -133,6 +134,7 @@ const Profile = ({ user }) => {
       return (
         <div id="profile" style={{ backgroundColor: "#00040f" }}>
           <form
+            onSubmit={(e) => {e.preventDefault()}}
             className="form"
             style={{
               display: "flex",
@@ -189,6 +191,7 @@ const Profile = ({ user }) => {
                   Save
                 </button>
               </div>
+              <div className="ml-1 text-red-500">{errorMessages.Email}</div>
             </div>
             <div className="flex flex-col">
               <div style={{ display: "flex" }}>
@@ -227,6 +230,7 @@ const Profile = ({ user }) => {
                   Save
                 </button>
               </div>
+              <div className="ml-1 text-red-500">{errorMessages.Username}</div>
             </div>
             <div>
             <button></button>
@@ -247,6 +251,7 @@ const Profile = ({ user }) => {
                   onChange={(e) => setOldPassword(e.target.value)}
                   placeholder="Old Password"
                 />
+                <div className="ml-1 text-red-500">{errorMessages.OldPassword}</div>
                 <div style={{ display: "flex" }}>
                   <input
                     className="text-input"
@@ -265,6 +270,7 @@ const Profile = ({ user }) => {
                     placeholder="New Password"
                   />
                 </div>
+            <div className="ml-1 text-red-500">{errorMessages.NewPassword}</div>
                 <button
                     style={{
                       border: "1px solid #81d2ff",
@@ -310,7 +316,7 @@ const Profile = ({ user }) => {
             </div>
           </form>
           
-          <div class="summary-section">
+          <div className="summary-section">
             <h1 className="aim-test-summary" id="aim-test-summary" onClick={() => {setIsAimTestsVisible(!isAimTestsVisible)}}>🎯 Aim test summary</h1>
                   { isAimTestsVisible && <div className="testResults">
                       <h2>Results</h2>
@@ -319,7 +325,7 @@ const Profile = ({ user }) => {
                       <Table theadData={getKeys(aimTestSummary)} tbodyData={[getValues(aimTestSummary)]} />
                       <button className="submit-input" onClick={() => {BackendService.deleteAllMyResultsIn("AimTest").then(update);}}>Delete All</button>
                   </div> }
-                  <h1 classname="reaction-time-test-summary" id="reaction-time-test-summary" onClick={() => {setIsReactionTimeTestsVisible(!isReactionTimeTestsVisible)}}>⚡Reaction time test summary</h1>
+                  <h1 className="reaction-time-test-summary" id="reaction-time-test-summary" onClick={() => {setIsReactionTimeTestsVisible(!isReactionTimeTestsVisible)}}>⚡Reaction time test summary</h1>
                   { isReactionTimeTestsVisible && <div className="testResults">
                       <h2>Results</h2>
                       <Table theadData={reactionTimeTests.keys} tbodyData={reactionTimeTests.values} />
@@ -327,7 +333,7 @@ const Profile = ({ user }) => {
                       <Table theadData={getKeys(reactionTimeTestSummary)} tbodyData={[getValues(reactionTimeTestSummary)]} />
                       <button className="submit-input" onClick={() => {BackendService.deleteAllMyResultsIn("ReactionTimeTest").then(update);}}>Delete All</button>
                   </div> }
-                  <h1 classname="number-memory-test-results" id="number-memory-test-results" onClick={() => {setIsNumberMemoryTestsVisible(!isNumberMemoryTestsVisible)}}>🔢 Number memory test results</h1>
+                  <h1 className="number-memory-test-results" id="number-memory-test-results" onClick={() => {setIsNumberMemoryTestsVisible(!isNumberMemoryTestsVisible)}}>🔢 Number memory test results</h1>
                   { isNumberMemoryTestsVisible && <div className="testResults">
                       <h2>Results</h2>
                       <Table theadData={numberMemoryTests.keys} tbodyData={numberMemoryTests.values} />
@@ -335,7 +341,7 @@ const Profile = ({ user }) => {
                       <Table theadData={getKeys(numberMemoryTestSummary)} tbodyData={[getValues(numberMemoryTestSummary)]} />
                       <button className="submit-input" onClick={() => {BackendService.deleteAllMyResultsIn("NumberMemoryTest").then(update);}}>Delete All</button>
                   </div> }
-                  <h1 classname="typing-test-results" id="typing-test-results" onClick={() => {setIsTypingTestsVisible(!isTypingTestsVisible)}}>⌨️ Typing test results</h1>
+                  <h1 className="typing-test-results" id="typing-test-results" onClick={() => {setIsTypingTestsVisible(!isTypingTestsVisible)}}>⌨️ Typing test results</h1>
                   { isTypingTestsVisible && <div className="testResults">
                       <h2>Results</h2>
                       <Table theadData={typingTests.keys} tbodyData={typingTests.values} />

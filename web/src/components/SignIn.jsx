@@ -4,9 +4,10 @@ import AuthenticationService from "../services/AuthenticationService";
 
 const SignIn = ({user, setUser}) => {
   const navigate = useNavigate();
-  const [signInFormData, setSignInFormData] = useState({});
-  const [registerFormData, setRegisterFormData] = useState({});
+  const [signInFormData, setSignInFormData] = useState({Email: "", Password: ""});
+  const [registerFormData, setRegisterFormData] = useState({Username: "", Email: "", Password: ""});
   const [isSigningIn, setIsSigningIn] = useState(true);
+  const [errorMessages, setErrorMessages] = useState({});
 
   const handleInputChange = (event, formData, setFormData) => {
     const name = event.target.name;
@@ -22,8 +23,21 @@ const SignIn = ({user, setUser}) => {
         setUser(u);
         navigate("/");
       })
-      .catch((error) => console.error(error));
-    setFormData({});
+      .catch((error) => {
+        let newErrorMessages = {};
+        event.target.querySelectorAll("input")
+        .forEach(el => {
+          if (error[el.name.toLowerCase()]) {
+            el.style.border = "solid red 1px";
+            newErrorMessages[el.name] = error[el.name.toLowerCase()];
+          } else {
+            el.style.border = "none";
+          }
+        });
+        Object.keys(error)
+        .forEach(key => newErrorMessages[key.charAt(0).toUpperCase() + key.slice(1)] = error[key]);
+        setErrorMessages(newErrorMessages);
+      });
   };
 
   return (<>
@@ -77,6 +91,7 @@ const SignIn = ({user, setUser}) => {
               placeholder="Password"
               style={{ width: "250px" }}
             ></input>
+            <div className="ml-1 text-red-500">{errorMessages.Error}</div>
           </div>
           <button
             style={{ width: "250px", color: "white" }}
@@ -91,7 +106,7 @@ const SignIn = ({user, setUser}) => {
             <a
               href="#"
               className="text-white font-bold"
-              onClick={() => setIsSigningIn(false)}
+              onClick={() => {setIsSigningIn(false); setErrorMessages({});}}
             >
               Sign Up!
             </a>
@@ -119,7 +134,7 @@ const SignIn = ({user, setUser}) => {
           <h1 className="text-2xl font-bold text-center text-white mb-8">
             Create Your Account
           </h1>
-          <div className="flex flex-col">'
+          <div className="flex flex-col">
             <input
               className="text-input mt-2 rounded 20px"
               type="text"
@@ -131,6 +146,7 @@ const SignIn = ({user, setUser}) => {
               placeholder="Username"
               style={{ width: "250px" }}
             ></input>
+            <div className="ml-1 text-red-500">{errorMessages.Username}</div>
             <input
               className="text-input mt-2 rounded 20px"
               type="email"
@@ -142,6 +158,7 @@ const SignIn = ({user, setUser}) => {
               placeholder="Email"
               style={{ width: "250px" }}
             ></input>
+            <div className="ml-1 text-red-500">{errorMessages.Email}</div>
             <input
               className="text-input mt-2 rounded 20px"
               type="password"
@@ -153,6 +170,7 @@ const SignIn = ({user, setUser}) => {
               placeholder="Password"
               style={{ width: "250px" }}
             ></input>
+            <div className="ml-1 text-red-500">{errorMessages.Password}</div>
           </div>
           <button
             style={{ width: "250px", color: "white" }}
@@ -167,7 +185,7 @@ const SignIn = ({user, setUser}) => {
             <a
               href="#"
               className="text-white font-bold"
-              onClick={() => setIsSigningIn(true)}
+              onClick={() => {setIsSigningIn(true); setErrorMessages({});}}
             >
               Log In!
             </a>

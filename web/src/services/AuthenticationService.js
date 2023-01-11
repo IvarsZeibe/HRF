@@ -16,8 +16,7 @@ class AuthenticationSerivce {
             if (response.ok) {
                 return response.json();
             } else {
-                response.text().then(res => {throw Error(res)});
-                throw Error(response.status);
+                return response.json().then(res => {throw res});
             }
         })
         .then(data => {
@@ -40,7 +39,7 @@ class AuthenticationSerivce {
             if (response.ok) {
                 return response.json();
             } else {
-                throw Error(response.statusText);
+                return response.json().then(res => {throw res});
             }
         })
         .then(data => {
