@@ -83,6 +83,16 @@ public class TypingTestController : ControllerBase
             return NotFound();
         }
 
+        var errors = new
+        {
+            Accuracy = data.Accuracy < 0 || data.Accuracy > 1 ? "Must be betweeen 0 and 1" : null,
+            WordsPerMintute = data.WordsPerMinute < 0 ? "Must be above zero" : null
+        };
+        if (errors.GetType().GetProperties().Any(p => p.GetValue(errors) is not null))
+        {
+            return BadRequest(errors);
+        }
+        
         TypingTest typingTest = new TypingTest(user.Id, data.WordsPerMinute, data.Accuracy);
         context.TypingTests.Add(typingTest);
         await context.SaveChangesAsync();

@@ -81,6 +81,15 @@ public class ReactionTimeTestController : ControllerBase
             return NotFound();
         }
 
+        var errors = new
+        {
+            ReactionTime = data.ReactionTime < 0 ? "Must be above zero" : null
+        };
+        if (errors.GetType().GetProperties().Any(p => p.GetValue(errors) is not null))
+        {
+            return BadRequest(errors);
+        }
+        
         ReactionTimeTest reactionTimeTest = new ReactionTimeTest(user.Id, data.ReactionTime);
         context.ReactionTimeTests.Add(reactionTimeTest);
         await context.SaveChangesAsync();

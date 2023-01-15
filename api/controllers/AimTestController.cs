@@ -83,6 +83,16 @@ public class AimTestController : ControllerBase
         {
             return NotFound();
         }
+        
+        var errors = new
+        {
+            Accuracy = data.Accuracy < 0 || data.Accuracy > 1 ? "Must be betweeen 0 and 1" : null,
+            AverageTimePerTarget = data.AverageTimePerTarget < 0 ? "Must be above zero" : null
+        };
+        if (errors.GetType().GetProperties().Any(p => p.GetValue(errors) is not null))
+        {
+            return BadRequest(errors);
+        }
 
         AimTest aimTest = new AimTest(user.Id, data.AverageTimePerTarget, data.Accuracy);
         context.AimTests.Add(aimTest);

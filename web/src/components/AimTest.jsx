@@ -172,7 +172,7 @@ const AimTest = () => {
                 <div className="board" id="board">
                     {isTestDone && 
                     <>
-                        <p class="testData">Time: 
+                        <p className="testData">Time: 
                         <span className="primary"> {seconds}.{tens}s</span><br/>
                         Accuracy: 
                         <span className="primary"> {accuracy}%</span>

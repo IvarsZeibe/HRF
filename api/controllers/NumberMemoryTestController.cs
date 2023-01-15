@@ -82,6 +82,15 @@ public class NumberMemoryTestController : ControllerBase
             return NotFound();
         }
 
+        var errors = new
+        {
+            DigitCount = data.DigitCount < 0 ? "Must be above zero" : null
+        };
+        if (errors.GetType().GetProperties().Any(p => p.GetValue(errors) is not null))
+        {
+            return BadRequest(errors);
+        }
+        
         NumberMemoryTest numberMemoryTest = new NumberMemoryTest(user.Id, data.DigitCount);
         context.NumberMemoryTests.Add(numberMemoryTest);
         await context.SaveChangesAsync();
