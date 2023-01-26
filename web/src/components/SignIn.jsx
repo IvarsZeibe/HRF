@@ -36,6 +36,10 @@ const SignIn = ({user, setUser}) => {
         });
         Object.keys(error)
         .forEach(key => newErrorMessages[key.charAt(0).toUpperCase() + key.slice(1)] = error[key]);
+        if (Object.keys(error).length == 0) {
+          setErrorMessages({"Error": "An error occured"});
+          return;
+        }
         setErrorMessages(newErrorMessages);
       });
   };
@@ -171,6 +175,7 @@ const SignIn = ({user, setUser}) => {
               style={{ width: "250px" }}
             ></input>
             <div className="ml-1 text-red-500">{errorMessages.Password}</div>
+            <div className="ml-1 text-red-500">{errorMessages.Error}</div>
           </div>
           <button
             style={{ width: "250px", color: "white" }}
