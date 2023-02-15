@@ -3,7 +3,7 @@ import { Footer, Navbar } from "../components";
 import { Outlet } from "react-router-dom";
 
 const Layout = ({user}) => {
-  return <div className="bg-primary w-full overflow-hidden">
+  return <div className="bg-primary w-full overflow-hidden min-h-screen">
     <div className={`${styles.paddingX} ${styles.flexCenter}`}>
       <div className={`${styles.boxWidth}`}>
         <Navbar user={user} />
