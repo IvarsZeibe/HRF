@@ -8,6 +8,7 @@ import keyboard from "./keyboard.png";
 import voltage from "./voltage.png";
 import target from "./target.png";
 import numbers from "./numbers.png";
+import instrukcija from "./instrukcija.pdf";
 
 export {
   logo,
@@ -19,5 +20,6 @@ export {
   keyboard,
   voltage,
   target,
-  numbers
+  numbers,
+  instrukcija
 };
