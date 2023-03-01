@@ -164,6 +164,9 @@ const AimTest = () => {
             <div className="screen">
                 <p className="header">Aim Training</p>
                 <button id="start">Start the game</button>
+                <div id="tutorial">
+                    Test has a total of 10 targets. Click the circles on the screen. You can view your current time during the test.  After completion you will see your accuracy and speed. Good luck!
+                </div>
             </div>
 
             <div className="screen">
