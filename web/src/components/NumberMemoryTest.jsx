@@ -16,6 +16,7 @@ const NumberMemoryTest = () => {
     useEffect(() => {
         numberArray = Array.from({ length: 20 }, () => Math.floor((Math.random() * 100) % 10));
         const header = document.querySelector(".header");
+        const tutorial = document.getElementById("tutorial");
         const arrayDisplay = document.querySelector(".arrayDisplay");
         const startBtn = document.querySelector(".start");
         const inputField = document.querySelector(".inputField");
@@ -27,6 +28,7 @@ const NumberMemoryTest = () => {
 
         const init = () => {
             header.classList.remove("hide")
+            tutorial.classList.remove("hide")
             startBtn.classList.remove("hide");
         };
       
@@ -35,6 +37,7 @@ const NumberMemoryTest = () => {
 
         const startBtnClick = () => {
             header.classList.add("hide");
+            tutorial.classList.add("hide")
             startBtn.classList.add("hide");
             displayArray();
         }
@@ -91,6 +94,7 @@ const NumberMemoryTest = () => {
             level++;
             numberArray = Array.from({ length: 20 }, () => Math.floor(Math.random() * 9));
             header.classList.add("hide");
+            tutorial.classList.add("hide");
             startBtn.classList.add("hide");
             continueBtn.classList.add("hide");
             levelDisplay.classList.add("hide");
@@ -122,6 +126,9 @@ const NumberMemoryTest = () => {
             <span className="levelDisplay hide">Level: {level}</span>
             <input type="text" className="inputField hide"></input>
             <button className="start">Start</button>
+            <div id="tutorial">
+                Remember the number on screen. After it disappears input the number. You get to the next level if the number is correct. Good luck!
+            </div>
             <button className="continue hide">Continue</button>
             <div className="hide">
                 <button className="resetBtn" onClick={() => {window.location.reload()}}>Reset</button>
