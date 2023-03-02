@@ -127,6 +127,7 @@ const NumberMemoryTest = () => {
             <input type="text" className="inputField hide"></input>
             <button className="start">Start</button>
             <div id="tutorial">
+                <div style={{fontSize: "30px"}}>How to use</div>
                 Remember the number on screen. After it disappears input the number. You get to the next level if the number is correct. Good luck!
             </div>
             <button className="continue hide">Continue</button>

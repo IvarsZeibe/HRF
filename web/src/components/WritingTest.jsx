@@ -114,6 +114,7 @@ const WritingTest = () => {
                 </p>
                 <h3><span className="wpm">WPM: {wpm} |</span><span id="timeLeft"> Time left: {timeLeft.current}</span><span id="accuracyDisplay"> Accuracy: {accuracy}</span>%</h3>
                 <div id="tutorial">
+                    <div style={{fontSize: "30px"}}>How to use</div>
                     Test length is 30 seconds. You can view your current speed (words per minute), time left (seconds) and accuracy below the words you need to type. Good luck!
                 </div>
                 <div className="hide">

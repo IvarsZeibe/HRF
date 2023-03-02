@@ -152,6 +152,7 @@ const ReactionTest = () => {
         <div className="main-menu active">
           <div className="container">
             <h1>Reaction Time Test</h1>
+            <div style={{fontSize: "30px"}}>How to use</div>
             <p>Test measures an averge of three tries. Click as soon as you see the green color on the screen. Good luck!</p>
             <p>Click anywhere to start.</p>
           </div>
