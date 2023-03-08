@@ -142,4 +142,24 @@ a:hover {
     width : 280px;
     height: 280px;
   }
+
+  
+  .instruction-box {
+    border: none;
+    background: #020c29;
+    color: #fff;
+    font-size: 20px;
+    padding: 8px 32px;
+    margin-top: 10px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    cursor: pointer;
+    display: inline;
+    text-align: left;
+    text-align: justify;
+  }
+
+  .instruction-box p {
+    font-size: 32px;
+  }
 }

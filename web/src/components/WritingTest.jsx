@@ -104,6 +104,10 @@ const WritingTest = () => {
     return(
         <>
             <div className="screen">
+                <div className="instruction-box">
+                    <p>HOW TO:</p>
+                    Test length is 30 seconds. You can view your current speed (words per minute), time left (seconds) and accuracy below the words you need to type. Good luck!
+                </div>
                 <h1 id="testHeader">Test will start when You start writing</h1>
                 <p className="character">
                     <span className="outgoingChar">
@@ -113,10 +117,6 @@ const WritingTest = () => {
                     <span>{incomingChars.substr(0, 20)}</span>
                 </p>
                 <h3><span className="wpm">WPM: {wpm} |</span><span id="timeLeft"> Time left: {timeLeft.current}</span><span id="accuracyDisplay"> Accuracy: {accuracy}</span>%</h3>
-                <div id="tutorial">
-                    <div style={{fontSize: "30px"}}>How to use</div>
-                    Test length is 30 seconds. You can view your current speed (words per minute), time left (seconds) and accuracy below the words you need to type. Good luck!
-                </div>
                 <div className="hide">
                     <button className="resetBtn" onClick={() => {window.location.reload()}}>Restart</button>
                     {!AuthenticationService.isSignedIn() && <button onClick={() => navigate("/signin")} className="play-again-btn">Sign in</button>}

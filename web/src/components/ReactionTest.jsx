@@ -8,10 +8,13 @@ const ReactionTest = () => {
   const navigate = useNavigate();
   const [scoreIsSaved, setScoreIsSaved] = useState(false);
   const [reactionTime, setReactionTime] = useState();
+
   function save() {
-    BackendService.addMyTestResult("ReactionTimeTest", {ReactionTime: reactionTime})
-    .then(res => setScoreIsSaved(true))
-    .catch(err => console.log(err));
+    BackendService.addMyTestResult("ReactionTimeTest", {
+      ReactionTime: reactionTime,
+    })
+      .then((res) => setScoreIsSaved(true))
+      .catch((err) => console.log(err));
   }
 
   useEffect(() => {
@@ -19,7 +22,9 @@ const ReactionTest = () => {
     const clickableArea = document.querySelector(".clickable-area");
     const message = document.querySelector(".clickable-area .message");
     const endScreen = document.querySelector(".end-screen");
-    const reactionTimeText = document.querySelector(".end-screen .reaction-time-text");
+    const reactionTimeText = document.querySelector(
+      ".end-screen .reaction-time-text"
+    );
     const playAgainBtn = document.querySelector(".end-screen .play-again-btn");
 
     let timer;
@@ -65,6 +70,7 @@ const ReactionTest = () => {
     function mainMenuClick() {
       startGame();
     }
+
     mainMenu.addEventListener("click", mainMenuClick);
 
     const endGame = () => {
@@ -86,7 +92,7 @@ const ReactionTest = () => {
 
       reactionTimeText.innerHTML = `${averageScore} ms`;
     };
-    
+
     const displayReactionTime = (rt) => {
       clickableArea.style.backgroundColor = "#020c29";
       message.innerHTML = `<div class='reaction-time-text'>${rt} ms</div>Click to continue.`;
@@ -137,31 +143,47 @@ const ReactionTest = () => {
       playAgainBtn.removeEventListener("click", playAgainBtnClick);
     };
   }, []);
-    return (
-      <>
-        <div className="end-screen">
-          <div className="container">
-            <h1>Reaction Time Test</h1>
-            <div className="reaction-time-text">234 ms</div>
-            <button className="play-again-btn">Play Again</button>
-            {!AuthenticationService.isSignedIn() && <button onClick={() => navigate("/signin")} className="play-again-btn">Sign in</button>}
-            {AuthenticationService.isSignedIn() && !scoreIsSaved && <button onClick={save} className="play-again-btn">Save</button>}
-          </div>
-        </div>
 
-        <div className="main-menu active">
-          <div className="container">
-            <h1>Reaction Time Test</h1>
-            <div style={{fontSize: "30px"}}>How to use</div>
-            <p>Test measures an averge of three tries. Click as soon as you see the green color on the screen. Good luck!</p>
-            <p>Click anywhere to start.</p>
-          </div>
+  return (
+    <>
+      <div className="end-screen">
+        <div className="container">
+          <h1>Reaction Time Test</h1>
+          <div className="reaction-time-text">234 ms</div>
+          <button className="play-again-btn">Play Again</button>
+          {!AuthenticationService.isSignedIn() && (
+            <button
+              onClick={() => navigate("/signin")}
+              className="play-again-btn"
+            >
+              Sign in
+            </button>
+          )}
+          {AuthenticationService.isSignedIn() && !scoreIsSaved && (
+            <button onClick={save} className="play-again-btn">
+              Save
+            </button>
+          )}
         </div>
+      </div>
 
-        <div className="clickable-area bg-primary">
-          <div className="message">Click Now!</div>
+      <div className="main-menu active">
+        <div className="container">
+        <div className="instruction-box">
+        <p>HOW TO:</p>
+        Test measures an average of three tries. Click as soon as you see the
+        green color on the screen. Good luck!
         </div>
-      </>
-    )
+          <h1>Reaction Time Test</h1>
+
+          <p>Click anywhere to start.</p>
+        </div>
+      </div>
+      <div className="clickable-area bg-primary">
+        <div className="message">Click Now!</div>
+      </div>
+    </>
+  );
 };
+
 export default ReactionTest;

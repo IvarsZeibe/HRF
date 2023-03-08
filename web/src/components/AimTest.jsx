@@ -162,12 +162,12 @@ const AimTest = () => {
     return (
         <>
             <div className="screen">
-                <p className="header">Aim Training</p>
-                <button id="start">Start the game</button>
-                <div id="tutorial">
-                    <div style={{fontSize: "30px"}}>How to use</div>
+                <div className="instruction-box">
+                    <p>HOW TO:</p>
                     Test has a total of 10 targets. Click the circles on the screen. You can view your current time during the test.  After completion you will see your accuracy and speed. Good luck!
                 </div>
+                <p className="header">Aim Training</p>
+                <button id="start">Start the game</button>
             </div>
 
             <div className="screen">
