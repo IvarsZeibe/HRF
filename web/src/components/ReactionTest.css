@@ -23,8 +23,6 @@ body {
   width: 100%;
   background: #020c29;
   color: #fff;
-  font-family: "Roboto", sans-serif;
-  text-align: center;
 }
 
 .active {
@@ -88,12 +86,16 @@ body {
   margin-top: 10px;
   font-weight: 900;
   letter-spacing: 4px;
-  cursor: pointer;
   display: inline;
-  text-align: left;
   text-align: justify;
+  font-family: monospace;
 }
 
 .instruction-box p {
   font-size: 32px;
+}
+
+.title {
+  font-family: "Roboto", sans-serif;
+  text-align: center;
 }

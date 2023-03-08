@@ -169,14 +169,16 @@ const ReactionTest = () => {
 
       <div className="main-menu active">
         <div className="container">
-        <div className="instruction-box">
-        <p>HOW TO:</p>
-        Test measures an average of three tries. Click as soon as you see the
-        green color on the screen. Good luck!
-        </div>
-          <h1>Reaction Time Test</h1>
+          <div className="instruction-box">
+            <p>HOW TO:</p>
+            Test measures an average of three tries. Click as soon as you see the
+            green color on the screen. Good luck!
+          </div>
+          <div className="title">
+            <h1>Reaction Time Test</h1>
 
-          <p>Click anywhere to start.</p>
+            <p>Click anywhere to start.</p>
+          </div>
         </div>
       </div>
       <div className="clickable-area bg-primary">

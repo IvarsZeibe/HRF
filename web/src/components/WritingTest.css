@@ -2,11 +2,6 @@ body {
     margin: 0;
 }
 
-#tutorial {
-    font-size: 24px;
-    padding: 40px;
-    margin-top: 20vh;
-}
 
 .screen {
     max-width: inherit;
@@ -57,7 +52,6 @@ h1 {
     margin-top: 10px;
     font-weight: 900;
     letter-spacing: 4px;
-    cursor: pointer;
     display: inline;
     text-align: left;
     text-align: justify;
